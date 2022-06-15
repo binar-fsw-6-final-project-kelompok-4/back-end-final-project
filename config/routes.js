@@ -29,6 +29,9 @@ apiRouter.delete(
   controllers.api.v1.post.destroy
 );
 
+//USER
+apiRouter.post("/api/v1/users", controllers.api.v1.userController.createUser);
+
 /**
  * TODO: Delete this, this is just a demonstration of
  *       error handler
