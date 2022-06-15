@@ -1,7 +1,21 @@
 const bcrypt = require("bcryptjs");
-const {
-    User
-} = require("../../../models");
+const {users} = require('../../../models/users')
+
+const updateProfile = async (req,res,next)=>{
+    try {
+        const data = await users.update(
+            {
+                ...req.body
+            },
+            {
+                where: {id: req.params.id},returning: true
+            }
+        )
+    } catch (error) {
+        res.status(500).send(err)
+    }
+}
+
 
 const getByEmail = async (req, res, email) => {
     return User.findOne({
@@ -49,5 +63,7 @@ const createUser = async (req, res) => {
 
 module.exports = {
     createUser,
-    getByEmail
+    getByEmail,
+    updateProfile
+    
 };
