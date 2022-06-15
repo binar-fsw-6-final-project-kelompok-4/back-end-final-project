@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const {
     users
-} = require('../../../models/users')
+} = require('../../../models')
 
 const updateProfile = async (req, res, next) => {
     try {
