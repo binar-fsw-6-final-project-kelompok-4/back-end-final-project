@@ -32,6 +32,9 @@ apiRouter.delete(
 //USER
 apiRouter.post("/api/v1/users", controllers.api.v1.userController.createUser);
 
+//PRODUCT
+apiRouter.post("/api/v1/products", controllers.api.v1.productController.createProduct);
+
 /**
  * TODO: Delete this, this is just a demonstration of
  *       error handler
