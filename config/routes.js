@@ -34,6 +34,14 @@ apiRouter.post("/api/v1/users", controllers.api.v1.userController.createUser);
 
 //PRODUCT
 apiRouter.post("/api/v1/products", controllers.api.v1.productController.createProduct);
+apiRouter.delete("/api/v1/products/:id",
+  controllers.api.v1.productController.setProduct,
+  controllers.api.v1.productController.deleteProductById
+);
+apiRouter.put("/api/v1/products/:id",
+  controllers.api.v1.productController.setProduct,
+  controllers.api.v1.productController.updateProductById
+);
 
 /**
  * TODO: Delete this, this is just a demonstration of
