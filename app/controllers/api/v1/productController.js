@@ -27,20 +27,20 @@ const createProduct = async (req, res) => {
 const updateProductById = async (req, res) => {
     const product = req.product;
     product
-      .update(req.body)
-      .then(() => {
-        res.status(200).json({
-          status: "OK",
-          data: product,
+        .update(req.body)
+        .then(() => {
+            res.status(200).json({
+                status: "OK",
+                data: product,
+            });
+        })
+        .catch((err) => {
+            res.status(422).json({
+                status: "FAIL",
+                message: err.message,
+            });
         });
-      })
-      .catch((err) => {
-        res.status(422).json({
-          status: "FAIL",
-          message: err.message,
-        });
-      });
-;}
+};
 
 const deleteProductById = async (req, res) => {
     req.product
@@ -77,9 +77,23 @@ const setProduct = async (req, res, next) => {
         });
 };
 
+const listAllProduct = async (req, res) => {
+
+    product.findAll()
+        .then((product) => {
+            res.status(200).json({
+                data: product,
+            });
+        })
+        .catch((err) => {
+            res.status(400).send(err)
+        })
+};
+
 module.exports = {
     createProduct,
     deleteProductById,
     updateProductById,
-    setProduct
+    setProduct,
+    listAllProduct
 }

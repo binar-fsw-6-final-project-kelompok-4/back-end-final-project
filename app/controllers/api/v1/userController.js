@@ -1,7 +1,8 @@
 const bcrypt = require("bcryptjs");
 const {
     users
-} = require('../../../models')
+} = require('../../../models/users')
+const jwt = require('../../../helper/jwt')
 
 const updateProfile = async (req, res, next) => {
     try {
@@ -18,7 +19,41 @@ const updateProfile = async (req, res, next) => {
     }
 }
 
+const login = async (req, res) => {
+    try {
+        const user = await users.findOne({where: {email: req.body.email}})
+        if (!user) {
+           res.status(404).send({
+            status: 404,
+            message: 'user not found!',
+           }) 
+        }
 
+        const isValidPassword = await bcrypt.compare(req.body.password, user.password)
+
+        if (!isValidPassword) {
+            res.status(404).send({
+                status: 400,
+                message: 'Email and password not match!',
+               }) 
+        }
+        const token = jwt.generateToken({email: user.email, password: user.password})
+        const secureuser = user.dataValues
+        delete secureuser.password
+
+        res.status(200).send({
+            status: 200,
+            message: 'Login succses',
+            data: {
+                admin: secureuser,
+                token: token
+            }
+           }) 
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error)
+    }
+}
 // const getByEmail = async (req, res, email) => {
 //     return users.findOne({
 //         where: {
@@ -59,6 +94,7 @@ const createUser = async (req, res) => {
 
 module.exports = {
     createUser,
-    updateProfile
+    updateProfile,
+    login
     // getByEmail
 };

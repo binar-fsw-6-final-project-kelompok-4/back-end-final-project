@@ -42,6 +42,7 @@ apiRouter.put("/api/v1/products/:id",
   controllers.api.v1.productController.setProduct,
   controllers.api.v1.productController.updateProductById
 );
+apiRouter.get("/api/v1/listproduct", controllers.api.v1.productController.listAllProduct);
 
 /**
  * TODO: Delete this, this is just a demonstration of
