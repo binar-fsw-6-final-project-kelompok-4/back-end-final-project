@@ -25,6 +25,22 @@ const createProduct = async (req, res) => {
         });
 };
 
+const listAllProduct = async (req, res) => {
+
+    product.findAll()
+        .then((product) => {
+            res.status(200).json({
+                data: product,
+            });
+        })
+        .catch((err) => {
+            res.status(400).send(err)
+        })
+
+
+};
+
 module.exports = {
-    createProduct
+    createProduct,
+    listAllProduct
 }
