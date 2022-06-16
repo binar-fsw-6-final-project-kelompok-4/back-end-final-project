@@ -34,6 +34,7 @@ apiRouter.post("/api/v1/users", controllers.api.v1.userController.createUser);
 
 //PRODUCT
 apiRouter.post("/api/v1/products", controllers.api.v1.productController.createProduct);
+apiRouter.get("/api/v1/listproduct", controllers.api.v1.productController.listAllProduct);
 
 /**
  * TODO: Delete this, this is just a demonstration of

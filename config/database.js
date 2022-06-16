@@ -5,7 +5,7 @@
 
 /** Destruct environment variable to get database configuration */
 const {
-  DB_USERNAME = "postgres", DB_PASSWORD = "eos600dx", DB_HOST = "127.0.0.1", DB_NAME = "qwerty"
+  DB_USERNAME = "pcuiaidq", DB_PASSWORD = "XflqcnXE3QJVSdjYmfVqht6ec__sG4zL", DB_HOST = "tiny.db.elephantsql.com", DB_NAME = "pcuiaidq"
 } = process.env;
 
 module.exports = {
