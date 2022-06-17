@@ -39,6 +39,14 @@ apiRouter.get("/api/v1/users/profile", auth, controllers.api.v1.userController.i
 //PRODUCT
 apiRouter.post("/api/v1/products", controllers.api.v1.productController.createProduct);
 apiRouter.get("/api/v1/listproduct", controllers.api.v1.productController.listAllProduct);
+apiRouter.delete("/api/v1/products/:id",
+  controllers.api.v1.productController.setProduct,
+  controllers.api.v1.productController.deleteProductById
+);
+apiRouter.put("/api/v1/products/:id",
+  controllers.api.v1.productController.setProduct,
+  controllers.api.v1.productController.updateProductById
+);
 
 /**
  * TODO: Delete this, this is just a demonstration of
