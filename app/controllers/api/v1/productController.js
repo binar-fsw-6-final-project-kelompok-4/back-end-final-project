@@ -9,7 +9,6 @@ const createProduct = async (req, res) => {
             category: req.body.category,
             createdAt: new Date(),
             updatedAt: new Date(),
-
         })
         .then((product) => {
             res.status(201).json({
@@ -89,8 +88,6 @@ const listAllProduct = async (req, res) => {
         .catch((err) => {
             res.status(400).send(err)
         })
-
-
 };
 
 module.exports = {
