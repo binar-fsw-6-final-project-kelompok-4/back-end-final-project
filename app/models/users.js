@@ -2,6 +2,8 @@
 const {
   Model
 } = require('sequelize');
+const product = require('./product');
+
 module.exports = (sequelize, DataTypes) => {
   class users extends Model {
     /**
@@ -28,8 +30,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'users',
   });
-  users.associate = function(models) {
-    users.hasMany(models.trancsaction, { foreignKey: 'buyer_id'})
-  };
+
+    users.hasMany(trancsaction, { foreignKey: 'buyer_id'})
+    users.hasMany(product, { foreignKey: 'seller_id'})
+
   return users;
 };

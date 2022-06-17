@@ -22,5 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'trancsaction',
   });
+   trancsaction.belongsTo(models.users);
+   trancsaction.belongsTo(models.product);
   return trancsaction;
 };

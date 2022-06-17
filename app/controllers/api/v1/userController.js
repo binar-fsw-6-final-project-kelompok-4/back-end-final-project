@@ -1,21 +1,23 @@
 const bcrypt = require("bcryptjs");
 const {
     users
-} = require('../../../models/users')
+} = require('../../../models')
 const jwt = require('../../../helper/jwt')
 
 const updateProfile = async (req, res, next) => {
     try {
-        const data = await users.update({
-            ...req.body
-        }, {
-            where: {
-                id: req.params.id
-            },
-            returning: true
+        const data = await users.update({...req.body}, {where: {id: req.userlogin.id},returning: true})
+        res.status(201).send({
+            status: 201,
+            message: 'Data user diupdate!',
+            data: data
         })
     } catch (error) {
-        res.status(500).send(err)
+        res.status(500).send({
+            error: "500"
+        }
+            
+        )
     }
 }
 
@@ -74,6 +76,7 @@ const createUser = async (req, res) => {
             email: req.body.email,
             password: hashedPassword,
             username: req.body.username,
+            role_id: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
 
@@ -92,9 +95,23 @@ const createUser = async (req, res) => {
         });
 };
 
+const infoUser = async(req,res) =>{
+    try{
+        res.status(200).send({
+            status: 200,
+            message: 'Data User Ditemukan!',
+            data: req.userlogin
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error)
+    }
+}
 module.exports = {
     createUser,
     updateProfile,
-    login
+    login,
+    updateProfile,
+    infoUser
     // getByEmail
 };

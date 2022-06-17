@@ -2,6 +2,8 @@
 const {
   Model
 } = require('sequelize');
+const users = require('./users')
+const transaction = require('./trancsaction')
 module.exports = (sequelize, DataTypes) => {
   class product extends Model {
     /**
@@ -27,5 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'product',
   });
+    product.belongsTo(users);
+    product.belongsToMany(transaction);
   return product;
 };
