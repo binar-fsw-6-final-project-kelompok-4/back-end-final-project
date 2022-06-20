@@ -1,5 +1,16 @@
 const express = require("express");
+const multer = require("multer"); // for file upload
 const controllers = require("../app/controllers");
+const path = require("path"); // import path
+
+const diskStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "./uploads")); // set destination
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname)); // set filename
+  },
+});
 
 const appRouter = express.Router();
 const apiRouter = express.Router();
@@ -35,14 +46,12 @@ apiRouter.post("/api/v1/users", controllers.api.v1.userController.createUser);
 //PRODUCT
 apiRouter.post("/api/v1/products", controllers.api.v1.productController.createProduct);
 apiRouter.delete("/api/v1/products/:id",
-  controllers.api.v1.productController.setProduct,
   controllers.api.v1.productController.deleteProductById
 );
 apiRouter.put("/api/v1/products/:id",
-  controllers.api.v1.productController.setProduct,
   controllers.api.v1.productController.updateProductById
 );
-apiRouter.get("/api/v1/listproduct", controllers.api.v1.productController.listAllProduct);
+apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllProduct);
 
 /**
  * TODO: Delete this, this is just a demonstration of

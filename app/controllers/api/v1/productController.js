@@ -1,99 +1,96 @@
 const {
     product
 } = require('../../../models')
+const fs = require("fs");
+const path = require("path");
 
 const createProduct = async (req, res) => {
-    product.create({
+    try {
+        await product.create({
             product_name: req.body.product_name,
             price: req.body.price,
             category: req.body.category,
+            product_img1: req.file.filename,
             createdAt: new Date(),
             updatedAt: new Date(),
-        })
-        .then((product) => {
-            res.status(201).json({
-                status: "OK",
-                data: product,
-            });
-        })
-        .catch((err) => {
-            res.status(201).json({
-                status: "FAIL",
-                message: err.message,
-            });
         });
+        res.status(201).json({
+            message: "Product Created",
+            data: product,
+        });
+    } catch (error) {
+        res.status(400).json({
+            error: error.message
+        });
+    }
 };
 
 const updateProductById = async (req, res) => {
-    const product = req.product;
-    product
-        .update(req.body)
-        .then(() => {
-            res.status(200).json({
-                status: "OK",
-                data: product,
-            });
-        })
-        .catch((err) => {
-            res.status(422).json({
-                status: "FAIL",
-                message: err.message,
+    try {
+        await product.findOne({
+            where: {
+                id: req.params.id,
+            },
+        }).then((updatedProduct) => {
+            if (!updatedProduct) return res.status(404).send();
+            updatedProduct.update({
+                product_name: req.body.product_name,
+                price: req.body.price,
+                category: req.body.category,
+                updatedAt: new Date(),
             });
         });
-};
+        res.status(200).json({
+            message: "Product Updated",
+            data: product,
+        })
+    } catch (error) {
+        res.status(400).json({
+            error: error.message
+        });
+    }
+}
 
 const deleteProductById = async (req, res) => {
-    req.product
-        .destroy()
-        .then(() => {
-            res.status(204).end();
-        })
-        .catch((err) => {
-            res.status(422).json({
-                status: "FAIL",
-                message: err.message,
+    try {
+        await product.findOne({
+            where: {
+                id: req.params.id,
+            },
+        }).then((deletedProduct) => {
+            if (!deletedProduct) return res.status(404).send();
+            deletedProduct.update({
+                updatedAt: new Date(),
             });
         });
-};
-
-const setProduct = async (req, res, next) => {
-    product.findByPk(req.params.id)
-        .then((product) => {
-            if (!product) {
-                res.status(404).json({
-                    status: "FAIL",
-                    message: "Product not found!",
-                });
-                return;
-            }
-            req.product = product;
-            next()
-        })
-        .catch((err) => {
-            res.status(404).json({
-                status: "FAIL",
-                message: "Product not found!",
-            });
+        res.status(200).json({
+            message: "Product Deleted",
+            data: product,
         });
-};
+    } catch (error) {
+        res.status(400).json({
+            error: error.message
+        });
+    }
+}
 
 const listAllProduct = async (req, res) => {
-
-    product.findAll()
-        .then((product) => {
-            res.status(200).json({
-                data: product,
-            });
-        })
-        .catch((err) => {
-            res.status(400).send(err)
-        })
+    try {
+        const products = await product.findAll();
+        res.status(200).json({
+            status: "OK",
+            products,
+        });
+    } catch (error) {
+        res.status(400).json({
+            error: error.message
+        });
+    }
 };
 
 module.exports = {
     createProduct,
     deleteProductById,
     updateProductById,
-    setProduct,
     listAllProduct
 }
