@@ -1,8 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
+  const { Model } = sequelize.Sequelize
   class trancsaction extends Model {
     /**
      * Helper method for defining associations.
@@ -22,7 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'trancsaction',
   });
-   trancsaction.belongsTo(models.users);
-   trancsaction.belongsTo(models.product);
+  trancsaction.associate = function (models){
+    trancsaction.belongsTo(models.product,{ foreignKey: 'id'})
+    trancsaction.belongsTo(models.users,{ foreignKey: 'id'})
+  }
   return trancsaction;
 };

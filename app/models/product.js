@@ -1,10 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
-const users = require('./users')
-const transaction = require('./trancsaction')
+
 module.exports = (sequelize, DataTypes) => {
+  const { Model } = sequelize.Sequelize
   class product extends Model {
     /**
      * Helper method for defining associations.
@@ -29,7 +26,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'product',
   });
-    product.belongsTo(users);
-    product.belongsToMany(transaction);
+  product.associate = function (models){
+    product.hasOne(models.trancsaction, { foreignKey: 'product_id'})
+    product.hasMany(models.users,{ foreignKey: 'id'})
+  }
   return product;
 };
