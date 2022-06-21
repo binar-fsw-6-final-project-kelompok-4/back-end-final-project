@@ -25,20 +25,56 @@ const createProduct = async (req, res) => {
     }
 };
 
+// const updateProductById = async (req, res) => {
+//     try {
+//         const {product_name, price, category} = req.body;
+//         const product_img1 = req.file.filename;
+//         const products = await product.findOne({
+//             where: {id: req.params.id},
+//         });
+//         fs.unlink(path.join(__dirname, "../../../../uploads/" + products.product_img1), (err) => {
+//             if (err) {
+//                 console.log(err);
+//             }
+//         });
+//         await product.update(
+//             {
+//                 product_name: product_name,
+//                 price: price,
+//                 category: category,
+//                 product_img1: product_img1,
+//             },
+//             {
+//                 where: {id: req.params.id},
+//             }
+//         );
+//     } catch (error) {
+//         res.status(500).json({error: error.message});
+//     }
+// };
+
 const updateProductById = async (req, res) => {
     try {
         await product.findOne({
             where: {
                 id: req.params.id,
             },
-        }).then((updatedProduct) => {
-            if (!updatedProduct) return res.status(404).send();
-            updatedProduct.update({
-                product_name: req.body.product_name,
-                price: req.body.price,
-                category: req.body.category,
-                updatedAt: new Date(),
-            });
+        });
+        fs.unlink(path.join(__dirname, "../../../../uploads/" + product.product_img1), (err) => {
+            if (err) {
+                console.log(err);
+            }
+        });
+        await product.update({
+            product_name: req.body.product_name,
+            price: req.body.price,
+            category: req.body.category,
+            product_img1: req.file.filename,
+            updatedAt: new Date(),
+        }, {
+            where: {
+                id: req.params.id
+            }
         });
         res.status(200).json({
             message: "Product Updated",
@@ -51,28 +87,45 @@ const updateProductById = async (req, res) => {
     }
 }
 
+// const deleteProductById = async (req, res) => {
+//     try {
+//         await product.findOne({
+//             where: {
+//                 id: req.params.id,
+//             },
+//         });
+//         fs.unlinkSync(path.join(__dirname, "../../../../uploads/" + product.product_img1), (err) => {
+//             if (err) {
+//                 console.log(err);
+//             }
+//         });
+//         await product.destroy(req.body);
+//         res.status(200).json({
+//             message: "Product Deleted",
+//             data: product,
+//         });
+//     } catch (error) {
+//         res.status(400).json({
+//             error: error.message
+//         });
+//     }
+// }
+
 const deleteProductById = async (req, res) => {
     try {
-        await product.findOne({
+        const products = await product.findOne({
             where: {
-                id: req.params.id,
-            },
-        }).then((deletedProduct) => {
-            if (!deletedProduct) return res.status(404).send();
-            deletedProduct.update({
-                updatedAt: new Date(),
-            });
+                id: req.params.id
+            }
         });
-        res.status(200).json({
-            message: "Product Deleted",
-            data: product,
-        });
+        products.destroy(req.body);
+        fs.unlinkSync(path.join(__dirname, "../../../../uploads/" + products.product_img1));
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
             error: error.message
         });
     }
-}
+};
 
 const listAllProduct = async (req, res) => {
     try {

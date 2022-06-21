@@ -5,7 +5,7 @@ const path = require("path"); // import path
 
 const diskStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "./uploads")); // set destination
+    cb(null, path.join(__dirname, "../uploads")); // set destination
   },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname)); // set filename
@@ -44,11 +44,18 @@ apiRouter.delete(
 apiRouter.post("/api/v1/users", controllers.api.v1.userController.createUser);
 
 //PRODUCT
-apiRouter.post("/api/v1/products", controllers.api.v1.productController.createProduct);
+apiRouter.post("/api/v1/products",
+  multer({
+    storage: diskStorage
+  }).single("product_img1"),
+  controllers.api.v1.productController.createProduct);
 apiRouter.delete("/api/v1/products/:id",
   controllers.api.v1.productController.deleteProductById
 );
 apiRouter.put("/api/v1/products/:id",
+  multer({
+    storage: diskStorage
+  }).single("product_img1"),
   controllers.api.v1.productController.updateProductById
 );
 apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllProduct);
