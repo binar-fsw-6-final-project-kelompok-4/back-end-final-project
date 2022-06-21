@@ -4,14 +4,34 @@ const {
 } = require('../../../models')
 const jwt = require('../../../helper/jwt')
 
-const updateProfile = async (req, res, next) => {
+const updateProfile = async (req, res) => {
     try {
         const data = await users.update({...req.body}, {where: {id: req.userlogin.id},returning: true})
-        res.status(201).send({
-            status: 201,
-            message: 'Data user diupdate!',
-            data: data
-        })
+        const userInfo = await users.findOne({where:{id:req.userlogin.id}})
+        if (
+            userInfo.name== null ||
+            userInfo.address==null ||
+            userInfo.contact==null ||
+            userInfo.city==null ||
+            userInfo.profile_img== null 
+        ) {
+            return(
+                res.status(201).send({
+                    status: 201,
+                    message: 'Data user diupdate!',
+                    data: data
+                })
+            )
+        }else{
+            const sellerChange = await users.update({role_id:2}, {where: {id: req.userlogin.id},returning: true})
+            return (
+                res.status(201).send({
+                    status: 201,
+                    message: 'Data user diupdate dan anda menjadi seller!',
+                    data: sellerChange
+                })
+            )
+        }
     } catch (error) {
         res.status(500).send({
             error: "500"
@@ -107,11 +127,13 @@ const infoUser = async(req,res) =>{
         res.status(500).send(error)
     }
 }
+
+
+
 module.exports = {
     createUser,
     updateProfile,
     login,
-    updateProfile,
     infoUser
     // getByEmail
 };
