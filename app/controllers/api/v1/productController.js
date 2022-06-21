@@ -40,7 +40,28 @@ const listAllProduct = async (req, res) => {
 
 };
 
+const getProductbyId = async (req, res, next) => {
+    product.findByPk(req.params.id)
+        .then((product) => {
+            if (product) {
+                res.status(200).json({
+                    data: product,
+                });
+            } 
+            else {
+                res.status(404).json({
+                    status: "FAIL",
+                    message: "Product not found!",
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(400).send(err)
+        });
+};
+
 module.exports = {
     createProduct,
-    listAllProduct
+    listAllProduct,
+    getProductbyId
 }

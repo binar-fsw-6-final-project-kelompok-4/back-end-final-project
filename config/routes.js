@@ -36,6 +36,8 @@ apiRouter.post("/api/v1/users", controllers.api.v1.userController.createUser);
 apiRouter.post("/api/v1/products", controllers.api.v1.productController.createProduct);
 apiRouter.get("/api/v1/listproduct", controllers.api.v1.productController.listAllProduct);
 
+apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.getProductbyId);
+
 /**
  * TODO: Delete this, this is just a demonstration of
  *       error handler
