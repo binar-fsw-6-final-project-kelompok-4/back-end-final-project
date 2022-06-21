@@ -59,6 +59,8 @@ apiRouter.put("/api/v1/products/:id",
   controllers.api.v1.productController.updateProductById
 );
 
+apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.getProductbyId);
+
 /**
  * TODO: Delete this, this is just a demonstration of
  *       error handler
