@@ -118,8 +118,12 @@ const deleteProductById = async (req, res) => {
                 id: req.params.id
             }
         });
-        products.destroy(req.body);
+        await products.destroy(req.body);
         fs.unlinkSync(path.join(__dirname, "../../../../uploads/" + products.product_img1));
+        res.status(200).json({
+            status: "Product Deleted",
+            data: products,
+        })
     } catch (error) {
         res.status(500).json({
             error: error.message
@@ -141,9 +145,54 @@ const listAllProduct = async (req, res) => {
     }
 };
 
+// const getProduct = async (req,res)=>{
+//     try {
+//         const data = product.findOne({where : {id: req.params.id}})
+//         res.status(200).send({
+//             status: 200,
+//             message: 'Data Product Ditemukan!',
+//             data: data
+//         })
+//     } catch (error) {
+//         res.status(404).json({
+//             status : 404,
+//             error : "produk tidak ditemukan"
+//         })
+//     }
+// }
+
+// const filterProduct = async (req,res) =>{
+//     try {
+//         const data= product.findAll({where: {category: "filter"}})
+//     } catch (error) {
+
+//     }
+// }
+
+
+const getProductbyId = async (req, res, next) => {
+    product.findByPk(req.params.id)
+        .then((product) => {
+            if (product) {
+                res.status(200).json({
+                    data: product,
+                });
+            } else {
+                res.status(404).json({
+                    status: "FAIL",
+                    message: "Product not found!",
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(400).send(err)
+        });
+};
+
 module.exports = {
     createProduct,
     deleteProductById,
     updateProductById,
-    listAllProduct
+    listAllProduct,
+    getProductbyId
 }

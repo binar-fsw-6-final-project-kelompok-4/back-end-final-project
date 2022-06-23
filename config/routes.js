@@ -12,6 +12,16 @@ const diskStorage = multer.diskStorage({
   },
 });
 
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg') {
+    cb(null, true);
+  } else {
+    cb(null, false)
+  }
+}
+
 const appRouter = express.Router();
 const apiRouter = express.Router();
 
@@ -41,12 +51,18 @@ apiRouter.delete(
 );
 
 //USER
-apiRouter.post("/api/v1/users", controllers.api.v1.userController.createUser);
+apiRouter.post("/api/v1/users/add", controllers.api.v1.userController.createUser);
+apiRouter.post("/api/v1/users/login", controllers.api.v1.userController.login);
+apiRouter.put("/api/v1/users/:id", multer({
+  storage: diskStorage,
+  fileFilter: fileFilter
+}).single("profile_img"), controllers.api.v1.userController.updateProfile);
 
 //PRODUCT
 apiRouter.post("/api/v1/products",
   multer({
-    storage: diskStorage
+    storage: diskStorage,
+    fileFilter: fileFilter
   }).single("product_img1"),
   controllers.api.v1.productController.createProduct);
 apiRouter.delete("/api/v1/products/:id",
@@ -54,7 +70,8 @@ apiRouter.delete("/api/v1/products/:id",
 );
 apiRouter.put("/api/v1/products/:id",
   multer({
-    storage: diskStorage
+    storage: diskStorage,
+    fileFilter: fileFilter
   }).single("product_img1"),
   controllers.api.v1.productController.updateProductById
 );
