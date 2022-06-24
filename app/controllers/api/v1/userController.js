@@ -4,44 +4,45 @@ const {
 } = require('../../../models')
 const jwt = require('../../../helper/jwt')
 
-const updateProfile = async (req, res, next) => {
-    const cekData = await users.findOne({
-        where: {
-            id: req.params.id,
-        }
-    });
-
-    if (!cekData) {
-        res.status(400).send({
-            status: 400,
-            message: "User tidak ditemukan!",
-        });
-    } else {
-        try {
-            const result = await users.update({
-                username: req.body.username,
-                profile_img: req.file.filename,
-                address: req.body.address,
-                contact: req.body.contact,
-                city: req.body.city                
-            }, {
-                where: {
-                    id: req.params.id,
-                }
-            });
-            const dataUser = JSON.parse(JSON.stringify(result));
-            res
-                .status(201)
-                .json({
+const updateProfile = async (req, res) => {
+    try {
+        const data = await users.update({
+            username: req.body.username,
+            profile_img: req.file.filename,
+            address: req.body.address,
+            contact: req.body.contact,
+            city: req.body.city}, {where: {id: req.userlogin.id},returning: true})
+        const userInfo = await users.findOne({where:{id:req.userlogin.id}})
+        if (
+            userInfo.name== null ||
+            userInfo.address==null ||
+            userInfo.contact==null ||
+            userInfo.city==null ||
+            userInfo.profile_img== null 
+        ) {
+            return(
+                res.status(201).send({
                     status: 201,
-                    message: "Data user telah diubah",
-                    data: dataUser,
+                    message: 'Data user diupdate!',
+                    data: data
                 })
-                .end();
-        } catch (err) {
-            console.log(err);
-            res.send(err);
+            )
+        }else{
+            const sellerChange = await users.update({role_id:2}, {where: {id: req.userlogin.id},returning: true})
+            return (
+                res.status(201).send({
+                    status: 201,
+                    message: 'Data user diupdate dan anda menjadi seller!',
+                    data: sellerChange
+                })
+            )
         }
+    } catch (error) {
+        res.status(500).send({
+            error: "500"
+        }
+            
+        )
     }
 }
 
@@ -115,7 +116,7 @@ const createUser = async (req, res) => {
             contact: null,
             city: null,
             profile_img: null,
-            role_id: 2,
+            role_id: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
         });
@@ -156,9 +157,25 @@ const createUser = async (req, res) => {
 //         });
 // };
 
+const infoUser = async(req,res) =>{
+    try{
+        res.status(200).send({
+            status: 200,
+            message: 'Data User Ditemukan!',
+            data: req.userlogin
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error)
+    }
+}
+
+
+
 module.exports = {
     createUser,
     updateProfile,
-    login
+    login,
+    infoUser
     // getByEmail
 };

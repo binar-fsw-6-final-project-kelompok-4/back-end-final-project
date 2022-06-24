@@ -21,6 +21,9 @@ const fileFilter = (req, file, cb) => {
     cb(null, false)
   }
 }
+const auth = require("../app/middleware/auth");
+const sellerAuth = require("../app/middleware/sellerAuth");
+const buyerSeller = require("../app/middleware/buyerSeller");
 
 const appRouter = express.Router();
 const apiRouter = express.Router();
@@ -52,19 +55,19 @@ apiRouter.delete(
 
 //USER
 apiRouter.post("/api/v1/users/add", controllers.api.v1.userController.createUser);
-apiRouter.post("/api/v1/users/login", controllers.api.v1.userController.login);
-apiRouter.put("/api/v1/users/:id", multer({
+apiRouter.put("/api/v1/users/profile/edit", auth, multer({
   storage: diskStorage,
   fileFilter: fileFilter
-}).single("profile_img"), controllers.api.v1.userController.updateProfile);
+}).single("profile_img"),controllers.api.v1.userController.updateProfile);
+apiRouter.post("/api/v1/users/login", controllers.api.v1.userController.login);
+apiRouter.get("/api/v1/users/profile", auth, controllers.api.v1.userController.infoUser);
 
 //PRODUCT
-apiRouter.post("/api/v1/products",
-  multer({
-    storage: diskStorage,
-    fileFilter: fileFilter
-  }).single("product_img1"),
-  controllers.api.v1.productController.createProduct);
+apiRouter.post("/api/v1/products", sellerAuth,  multer({
+  storage: diskStorage,
+  fileFilter: fileFilter
+}).single("product_img1"),controllers.api.v1.productController.createProduct);
+apiRouter.get("/api/v1/products/:id", buyerSeller,controllers.api.v1.productController.getProduct);
 apiRouter.delete("/api/v1/products/:id",
   controllers.api.v1.productController.deleteProductById
 );
@@ -76,6 +79,7 @@ apiRouter.put("/api/v1/products/:id",
   controllers.api.v1.productController.updateProductById
 );
 apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllProduct);
+apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.getProductbyId);
 
 /**
  * TODO: Delete this, this is just a demonstration of

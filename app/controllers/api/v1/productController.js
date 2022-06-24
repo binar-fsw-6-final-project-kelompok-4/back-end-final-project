@@ -11,6 +11,7 @@ const createProduct = async (req, res) => {
             price: req.body.price,
             category: req.body.category,
             product_img1: req.file.filename,
+            seller_id:req.userlogin.id,
             createdAt: new Date(),
             updatedAt: new Date(),
         });
@@ -169,6 +170,30 @@ const listAllProduct = async (req, res) => {
 //     }
 // }
 
+// const getProduct = async (req,res)=>{
+//     try {
+//         const data = product.findOne({where : {id: req.params.id}})
+//         res.status(200).send({
+//             status: 200,
+//             message: 'Data Product Ditemukan!',
+//             data: data
+//         })
+//     } catch (error) {
+//         res.status(404).json({
+//             status : 404,
+//             error : "produk tidak ditemukan"
+//         })
+//     }
+// }
+
+// const filterProduct = async (req,res) =>{
+//     try {
+//         const data= product.findAll({where: {category: "filter"}})
+//     } catch (error) {
+        
+//     }
+// }
+
 
 const getProductbyId = async (req, res, next) => {
     product.findByPk(req.params.id)
@@ -177,7 +202,8 @@ const getProductbyId = async (req, res, next) => {
                 res.status(200).json({
                     data: product,
                 });
-            } else {
+            } 
+            else {
                 res.status(404).json({
                     status: "FAIL",
                     message: "Product not found!",
