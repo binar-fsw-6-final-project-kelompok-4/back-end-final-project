@@ -6,7 +6,12 @@ const jwt = require('../../../helper/jwt')
 
 const updateProfile = async (req, res) => {
     try {
-        const data = await users.update({...req.body}, {where: {id: req.userlogin.id},returning: true})
+        const data = await users.update({
+            username: req.body.username,
+            profile_img: req.file.filename,
+            address: req.body.address,
+            contact: req.body.contact,
+            city: req.body.city}, {where: {id: req.userlogin.id},returning: true})
         const userInfo = await users.findOne({where:{id:req.userlogin.id}})
         if (
             userInfo.name== null ||
@@ -41,14 +46,19 @@ const updateProfile = async (req, res) => {
     }
 }
 
+
 const login = async (req, res) => {
     try {
-        const user = await users.findOne({where: {email: req.body.email}})
+        const user = await users.findOne({
+            where: {
+                email: req.body.email
+            }
+        })
         if (!user) {
-           res.status(404).send({
-            status: 404,
-            message: 'user not found!',
-           }) 
+            res.status(404).send({
+                status: 404,
+                message: 'user not found!',
+            })
         }
 
         const isValidPassword = await bcrypt.compare(req.body.password, user.password)
@@ -57,9 +67,12 @@ const login = async (req, res) => {
             res.status(404).send({
                 status: 400,
                 message: 'Email and password not match!',
-               }) 
+            })
         }
-        const token = jwt.generateToken({email: user.email, password: user.password})
+        const token = jwt.generateToken({
+            email: user.email,
+            password: user.password
+        })
         const secureuser = user.dataValues
         delete secureuser.password
 
@@ -70,50 +83,79 @@ const login = async (req, res) => {
                 admin: secureuser,
                 token: token
             }
-           }) 
+        })
     } catch (error) {
         console.log(error);
         res.status(500).send(error)
     }
 }
-// const getByEmail = async (req, res, email) => {
-//     return users.findOne({
-//         where: {
-//             email,
-//         },
-//     });
-// };
 
 const createUser = async (req, res) => {
-    // const existedUser = await getByEmail(req.body.email);
-    // if (existedUser) {
-    //     return res.status(400).send({
-    //         message: "Email has been used",
-    //     });
-    // }
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    users.create({
-            email: req.body.email,
-            password: hashedPassword,
+    try {
+        const email = req.body.email.toLowerCase();
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+        const user = await users.findOne({
+            where: {
+                email,
+            }
+        });
+        if (user) {
+            res.status(400).json({
+                message: "Email already exists"
+            });
+            return;
+        }
+
+        const newUser = await users.create({
             username: req.body.username,
+            email,
+            password: hashedPassword,
+            name: null,
+            address: null,
+            contact: null,
+            city: null,
+            profile_img: null,
             role_id: 1,
             createdAt: new Date(),
             updatedAt: new Date(),
-
-        })
-        .then((users) => {
-            res.status(201).json({
-                status: "OK",
-                data: users,
-            });
-        })
-        .catch((err) => {
-            res.status(201).json({
-                status: "FAIL",
-                message: err.message,
-            });
         });
-};
+        const user_data = JSON.parse(JSON.stringify(newUser));
+
+        delete user_data.password;
+
+        res.status(201).json({
+            user: user_data,
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: "FAIL",
+            message: err.message,
+        });
+    }
+}
+//     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+//     users.create({
+//             email: req.body.email,
+//             password: hashedPassword,
+//             username: req.body.username,
+//             createdAt: new Date(),
+//             updatedAt: new Date(),
+
+//         })
+//         .then((users) => {
+//             res.status(201).json({
+//                 status: "OK",
+//                 data: users,
+//             });
+//         })
+//         .catch((err) => {
+//             res.status(201).json({
+//                 status: "FAIL",
+//                 message: err.message,
+//             });
+//         });
+// };
 
 const infoUser = async(req,res) =>{
     try{
