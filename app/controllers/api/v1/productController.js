@@ -11,7 +11,7 @@ const createProduct = async (req, res) => {
             price: req.body.price,
             category: req.body.category,
             product_img1: req.file.filename,
-            seller_id:req.userlogin.id,
+            seller_id: req.userlogin.id,
             createdAt: new Date(),
             updatedAt: new Date(),
         });
@@ -60,11 +60,6 @@ const updateProductById = async (req, res) => {
             where: {
                 id: req.params.id,
             },
-        });
-        fs.unlink(path.join(__dirname, "../../../../uploads/" + product.product_img1), (err) => {
-            if (err) {
-                console.log(err);
-            }
         });
         await product.update({
             product_name: req.body.product_name,
@@ -120,7 +115,7 @@ const deleteProductById = async (req, res) => {
             }
         });
         await products.destroy(req.body);
-        fs.unlinkSync(path.join(__dirname, "../../../../uploads/" + products.product_img1));
+        fs.unlinkSync(path.join(__dirname, "../../../../public/data/uploads/" + products.product_img1));
         res.status(200).json({
             status: "Product Deleted",
             data: products,
@@ -190,7 +185,7 @@ const listAllProduct = async (req, res) => {
 //     try {
 //         const data= product.findAll({where: {category: "filter"}})
 //     } catch (error) {
-        
+
 //     }
 // }
 
@@ -202,8 +197,7 @@ const getProductbyId = async (req, res, next) => {
                 res.status(200).json({
                     data: product,
                 });
-            } 
-            else {
+            } else {
                 res.status(404).json({
                     status: "FAIL",
                     message: "Product not found!",
