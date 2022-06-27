@@ -1,7 +1,9 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-  const { Model } = sequelize.Sequelize
+  const {
+    Model
+  } = sequelize.Sequelize
   class users extends Model {
     /**
      * Helper method for defining associations.
@@ -10,8 +12,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasMany(models.trancsaction, {foreignKey: 'buyer_id'})
-      this.hasMany(models.product, {foreignKey: 'seller_id'})
+      this.hasMany(models.trancsaction, {
+        foreignKey: 'buyer_id'
+      })
+      this.hasMany(models.product, {
+        foreignKey: 'seller_id'
+      })
     }
   }
   users.init({
@@ -21,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     username: DataTypes.STRING,
     name: DataTypes.STRING,
     address: DataTypes.STRING,
-    contact: DataTypes.INTEGER,
+    contact: DataTypes.STRING,
     city: DataTypes.STRING,
     profile_img: DataTypes.STRING,
     role_id: DataTypes.INTEGER
@@ -29,10 +35,18 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'users',
   });
-    // users.associate = function (models){
-    //   users.hasMany(models.trancsaction, { foreignKey: 'buyer_id'})
-    //   users.hasMany(models.product, { foreignKey: 'seller_id'})
-    // }
+  users.associate = function (models) {
+    users.hasMany(models.trancsaction, {
+      foreignKey: 'buyer_id'
+    })
+    users.hasMany(models.product, {
+      foreignKey: 'seller_id'
+    })
+  }
+  // users.associate = function (models){
+  //   users.hasMany(models.trancsaction, { foreignKey: 'buyer_id'})
+  //   users.hasMany(models.product, { foreignKey: 'seller_id'})
+  // }
 
   return users;
 };
