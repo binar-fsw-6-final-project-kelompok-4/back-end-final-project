@@ -12,8 +12,8 @@ module.exports = async (req, res, next) => {
         })
         if (!seller) {
             res.status(404).send({ message: 'user not found' })
-        } else if (seller.dataValues.role===2){
-            req.sellerlogin = seller.dataValues
+        } else if (seller.dataValues.role_id==2){
+            req.userlogin = seller.dataValues
             next() 
         }else{
          res.status(404).send({ message: 'user not seller' })

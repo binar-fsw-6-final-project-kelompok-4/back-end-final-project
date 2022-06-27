@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasOne(models.trancsaction, { foreignKey: 'product_id'})
+      this.belongsTo(models.users,{ foreignKey: 'id'})
     }
   }
   product.init({
@@ -26,9 +28,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'product',
   });
-  product.associate = function (models){
-    product.hasOne(models.trancsaction, { foreignKey: 'product_id'})
-    product.hasMany(models.users,{ foreignKey: 'id'})
-  }
+  // product.associate = function (models){
+  //   product.hasOne(models.trancsaction, { foreignKey: 'product_id'})
+  //   product.hasMany(models.users,{ foreignKey: 'id'})
+  // }
   return product;
 };
