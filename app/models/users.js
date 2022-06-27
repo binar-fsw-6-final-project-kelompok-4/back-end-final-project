@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.trancsaction, {foreignKey: 'buyer_id'})
+      this.hasMany(models.product, {foreignKey: 'seller_id'})
     }
   }
   users.init({
@@ -27,10 +29,10 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'users',
   });
-    users.associate = function (models){
-      users.hasMany(models.trancsaction, { foreignKey: 'buyer_id'})
-      users.hasMany(models.product, { foreignKey: 'seller_id'})
-    }
+    // users.associate = function (models){
+    //   users.hasMany(models.trancsaction, { foreignKey: 'buyer_id'})
+    //   users.hasMany(models.product, { foreignKey: 'seller_id'})
+    // }
 
   return users;
 };
