@@ -67,7 +67,7 @@ apiRouter.post("/api/v1/products", sellerAuth,  multer({
   storage: diskStorage,
   fileFilter: fileFilter
 }).single("product_img1"),controllers.api.v1.productController.createProduct);
-apiRouter.get("/api/v1/products/:id", buyerSeller,controllers.api.v1.productController.getProduct);
+// apiRouter.get("/api/v1/products/:id", buyerSeller,controllers.api.v1.productController.getProduct);
 apiRouter.delete("/api/v1/products/:id",
   controllers.api.v1.productController.deleteProductById
 );

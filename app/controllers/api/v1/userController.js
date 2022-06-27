@@ -11,7 +11,9 @@ const updateProfile = async (req, res) => {
             profile_img: req.file.filename,
             address: req.body.address,
             contact: req.body.contact,
+            name: req.body.name,
             city: req.body.city}, {where: {id: req.userlogin.id},returning: true})
+
         const userInfo = await users.findOne({where:{id:req.userlogin.id}})
         if (
             userInfo.name== null ||
@@ -38,11 +40,12 @@ const updateProfile = async (req, res) => {
             )
         }
     } catch (error) {
-        res.status(500).send({
-            error: "500"
-        }
+        res.status(500).json({
+            status: "FAIL",
+            message: error.message,
+        });
             
-        )
+        
     }
 }
 
