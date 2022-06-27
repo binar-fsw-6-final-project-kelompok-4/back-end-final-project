@@ -11,24 +11,42 @@ const updateProfile = async (req, res) => {
             profile_img: req.file.filename,
             address: req.body.address,
             contact: req.body.contact,
-            city: req.body.city}, {where: {id: req.userlogin.id},returning: true})
-        const userInfo = await users.findOne({where:{id:req.userlogin.id}})
+            city: req.body.city,
+            name: req.body.name
+        }, {
+            where: {
+                id: req.userlogin.id
+            },
+            returning: true
+        })
+        const userInfo = await users.findOne({
+            where: {
+                id: req.userlogin.id
+            }
+        })
         if (
-            userInfo.name== null ||
-            userInfo.address==null ||
-            userInfo.contact==null ||
-            userInfo.city==null ||
-            userInfo.profile_img== null 
+            userInfo.name == null ||
+            userInfo.address == null ||
+            userInfo.contact == null ||
+            userInfo.city == null ||
+            userInfo.profile_img == null
         ) {
-            return(
+            return (
                 res.status(201).send({
                     status: 201,
                     message: 'Data user diupdate!',
                     data: data
                 })
             )
-        }else{
-            const sellerChange = await users.update({role_id:2}, {where: {id: req.userlogin.id},returning: true})
+        } else {
+            const sellerChange = await users.update({
+                role_id: 2
+            }, {
+                where: {
+                    id: req.userlogin.id
+                },
+                returning: true
+            })
             return (
                 res.status(201).send({
                     status: 201,
@@ -38,11 +56,12 @@ const updateProfile = async (req, res) => {
             )
         }
     } catch (error) {
-        res.status(500).send({
-            error: "500"
-        }
-            
-        )
+        res.status(500).json({
+            status: "FAIL",
+            message: error.message,
+        });
+
+
     }
 }
 
@@ -157,8 +176,8 @@ const createUser = async (req, res) => {
 //         });
 // };
 
-const infoUser = async(req,res) =>{
-    try{
+const infoUser = async (req, res) => {
+    try {
         res.status(200).send({
             status: 200,
             message: 'Data User Ditemukan!',
