@@ -99,8 +99,8 @@ const login = async (req, res) => {
             status: 200,
             message: 'Login succses',
             data: {
-                admin: secureuser,
-                token: token
+                token: token,
+                user: secureuser
             }
         })
     } catch (error) {
@@ -188,7 +188,6 @@ const infoUser = async (req, res) => {
         res.status(500).send(error)
     }
 }
-
 
 
 module.exports = {

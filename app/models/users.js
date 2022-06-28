@@ -35,18 +35,24 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'users',
   });
-  users.associate = function (models) {
-    users.hasMany(models.trancsaction, {
-      foreignKey: 'buyer_id'
-    })
-    users.hasMany(models.product, {
-      foreignKey: 'seller_id'
-    })
-  }
+// <<<<<<< HEAD
+//     users.associate = function (models){
+//       users.hasMany(models.trancsaction, { foreignKey: 'buyer_id'})
+//       users.hasMany(models.product, { foreignKey: 'seller_id'})
+//       users.hasMany(models.whislist, { foreignKey: 'user_id'})
+//     }
+// =======
+//   users.associate = function (models) {
+//     users.hasMany(models.trancsaction, {
+//       foreignKey: 'buyer_id'
+//     })
+//     users.hasMany(models.product, {
+//       foreignKey: 'seller_id'
+//     })
+//   }
   // users.associate = function (models){
   //   users.hasMany(models.trancsaction, { foreignKey: 'buyer_id'})
   //   users.hasMany(models.product, { foreignKey: 'seller_id'})
   // }
-
   return users;
 };

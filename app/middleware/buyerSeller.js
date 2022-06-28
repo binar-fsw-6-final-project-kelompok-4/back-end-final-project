@@ -12,10 +12,10 @@ module.exports = async (req, res, next) => {
         })
         if (!user) {
             res.status(404).send({ message: 'user not found' })
-        } else if (user.dataValues.role===2){
+        } else if (user.dataValues.role_id===2){
             req.userlogin = user.dataValues
             next() 
-        } else if (user.dataValues.role===1){
+        } else if (user.dataValues.role_id===1){
             req.userlogin = user.dataValues
             next() 
         }else{
