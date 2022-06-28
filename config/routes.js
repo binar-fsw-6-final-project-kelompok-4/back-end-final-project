@@ -61,10 +61,8 @@ apiRouter.get("/api/v1/users/profile", auth, controllers.api.v1.userController.i
 //PRODUCT
 apiRouter.post("/api/v1/products", sellerAuth, upload.single("product_img1"), controllers.api.v1.productController.createProduct);
 // apiRouter.get("/api/v1/products/:id", buyerSeller,controllers.api.v1.productController.getProduct);
-apiRouter.delete("/api/v1/products/:id",
-  controllers.api.v1.productController.deleteProductById
-);
-apiRouter.put("/api/v1/products/:id", upload.single("product_img1"), controllers.api.v1.productController.updateProductById);
+apiRouter.delete("/api/v1/products/:id", sellerAuth, controllers.api.v1.productController.deleteProductById);
+apiRouter.put("/api/v1/products/:id", sellerAuth, upload.single("product_img1"), controllers.api.v1.productController.updateProductById);
 apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllProduct);
 apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.getProductbyId);
 
