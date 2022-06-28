@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+
+      this.belongsTo(models.product, {foreignKey: 'product_id'})
+      this.belongsTo(models.users, {foreignKey: 'buyer_id'})
     }
   }
   trancsaction.init({
@@ -21,9 +25,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'trancsaction',
   });
-  trancsaction.associate = function (models){
-    trancsaction.belongsTo(models.product,{ foreignKey: 'id'})
-    trancsaction.belongsTo(models.users,{ foreignKey: 'id'})
-  }
+  // trancsaction.associate = function (models){
+  //   trancsaction.belongsTo(models.product,{ foreignKey: 'id'})
+  //   trancsaction.belongsTo(models.users,{ foreignKey: 'id'})
+  // }
   return trancsaction;
 };
