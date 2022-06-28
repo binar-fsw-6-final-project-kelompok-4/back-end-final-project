@@ -197,7 +197,8 @@ const getProductbyId = async (req, res, next) => {
                 res.status(200).json({
                     data: product,
                 });
-            } else {
+            } 
+            else {
                 res.status(404).json({
                     status: "FAIL",
                     message: "Product not found!",
@@ -205,9 +206,40 @@ const getProductbyId = async (req, res, next) => {
             }
         })
         .catch((err) => {
-            res.status(400).send(err)
-        });
+            res.status(400).send
+        })
+    }
+
+const filterProduct = async (req,res) =>{
+    try {
+        const data= product.findAll({where: {category: "filter"}})
+    } catch (error) {
+        
+    }
+}
+
+const getAllUserProduct = async (req, res) => {
+    product.findAll({where: {price: req.userlogin.id}})
+    .then((product) => {
+        if (product) {
+            res.status(200).json({
+                data: product,
+            });
+        } 
+        else {
+            res.status(404).json({
+                status: "FAIL",
+                message: "Product not found!",
+            });
+        }
+    })
+    .catch((err) => {
+        res.status(400).send(err)
+    });
+
 };
+
+
 
 module.exports = {
     createProduct,
