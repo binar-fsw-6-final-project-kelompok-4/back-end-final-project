@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     users.associate = function (models){
       users.hasMany(models.trancsaction, { foreignKey: 'buyer_id'})
       users.hasMany(models.product, { foreignKey: 'seller_id'})
+      users.hasMany(models.whislist, { foreignKey: 'user_id'})
     }
-
   return users;
 };

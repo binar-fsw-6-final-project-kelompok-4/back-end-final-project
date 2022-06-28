@@ -13,9 +13,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   trancsaction.init({
     product_id: DataTypes.INTEGER,
+    seller_id: DataTypes.INTEGER,
     buyer_id: DataTypes.INTEGER,
-    status: DataTypes.STRING,
-    offer: DataTypes.INTEGER
+    status: DataTypes.INTEGER,
+    offer: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'trancsaction',

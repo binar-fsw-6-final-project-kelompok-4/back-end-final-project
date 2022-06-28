@@ -4,12 +4,15 @@ const {
 
 const createProduct = async (req, res) => {
     product.create({
-            product_name: req.body.product_name,
-            price: req.body.price,
-            category: req.body.category,
-            seller_id:req.userlogin.id,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+        product_name: req.body.product_name,
+        price: req.body.price,
+        category: req.body.category,
+        description: req.body.description,
+        product_img1: req.body.product_img1,
+        product_img2: req.body.product_img2,
+        product_img3: req.body.product_img3,
+        product_img4: req.body.product_img4,
+        seller_id : req.userlogin.id
         })
         .then((product) => {
             res.status(201).json({
@@ -90,21 +93,25 @@ const listAllProduct = async (req, res) => {
         })
 };
 
-const getProduct = async (req,res)=>{
-    try {
-        const data = product.findOne({where : {id: req.params.id}})
-        res.status(200).send({
-            status: 200,
-            message: 'Data Product Ditemukan!',
-            data: data
+const getProductbyId = async (req, res, next) => {
+    product.findByPk(req.params.id)
+        .then((product) => {
+            if (product) {
+                res.status(200).json({
+                    data: product,
+                });
+            } 
+            else {
+                res.status(404).json({
+                    status: "FAIL",
+                    message: "Product not found!",
+                });
+            }
         })
-    } catch (error) {
-        res.status(404).json({
-            status : 404,
-            error : "produk tidak ditemukan"
+        .catch((err) => {
+            res.status(400).send
         })
     }
-}
 
 const filterProduct = async (req,res) =>{
     try {
@@ -114,6 +121,28 @@ const filterProduct = async (req,res) =>{
     }
 }
 
+const getAllUserProduct = async (req, res) => {
+    product.findAll({where: {price: req.userlogin.id}})
+    .then((product) => {
+        if (product) {
+            res.status(200).json({
+                data: product,
+            });
+        } 
+        else {
+            res.status(404).json({
+                status: "FAIL",
+                message: "Product not found!",
+            });
+        }
+    })
+    .catch((err) => {
+        res.status(400).send(err)
+    });
+
+};
+
+
 
 module.exports = {
     createProduct,
@@ -121,5 +150,5 @@ module.exports = {
     updateProductById,
     setProduct,
     listAllProduct,
-    getProduct
+    getProductbyId
 }

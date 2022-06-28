@@ -8,6 +8,7 @@ const updateProfile = async (req, res) => {
     try {
         const data = await users.update({...req.body}, {where: {id: req.userlogin.id},returning: true})
         const userInfo = await users.findOne({where:{id:req.userlogin.id}})
+        
         if (
             userInfo.name== null ||
             userInfo.address==null ||
@@ -67,8 +68,8 @@ const login = async (req, res) => {
             status: 200,
             message: 'Login succses',
             data: {
-                admin: secureuser,
-                token: token
+                token: token,
+                user: secureuser
             }
            }) 
     } catch (error) {
@@ -127,7 +128,6 @@ const infoUser = async(req,res) =>{
         res.status(500).send(error)
     }
 }
-
 
 
 module.exports = {

@@ -39,8 +39,8 @@ apiRouter.post("/api/v1/login", controllers.api.v1.userController.login);
 apiRouter.get("/api/v1/users/profile", auth, controllers.api.v1.userController.infoUser);
 
 //PRODUCT
-apiRouter.post("/api/v1/products", sellerAuth,controllers.api.v1.productController.createProduct);
-apiRouter.get("/api/v1/products/:id", buyerSeller,controllers.api.v1.productController.getProduct);
+apiRouter.post("/api/v1/products/create", sellerAuth,controllers.api.v1.productController.createProduct);
+apiRouter.get("/api/v1/products/:id", controllers.api.v1.productController.getProductbyId);
 apiRouter.delete("/api/v1/products/:id",
   controllers.api.v1.productController.setProduct,
   controllers.api.v1.productController.deleteProductById
@@ -58,6 +58,10 @@ apiRouter.put("/api/v1/products/:id",
   controllers.api.v1.productController.setProduct,
   controllers.api.v1.productController.updateProductById
 );
+apiRouter.post("/api/v1/products/offering", sellerAuth,controllers.api.v1.productController.createProduct);
+
+//TRANSACTION
+apiRouter.post("/api/v1/transaction/:id", controllers.api.v1.transactionController.firstOffer);
 
 /**
  * TODO: Delete this, this is just a demonstration of
