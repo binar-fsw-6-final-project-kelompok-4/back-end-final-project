@@ -23,11 +23,9 @@ module.exports = {
     dialect: "postgres",
   },
   test: {
-    username: DB_USERNAME,
-    password: DB_PASSWORD,
-    database: `${DB_NAME}_test`,
-    host: DB_HOST,
-    dialect: "postgres",
+    storage: DB_TEST_FILE_PATH,
+    logging: false,
+    dialect: "sqlite",
   },
   production: {
     username: DB_USERNAME,
