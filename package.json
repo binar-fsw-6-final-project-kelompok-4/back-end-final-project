@@ -6,6 +6,7 @@
   "scripts": {
     "start": "bin/www",
     "develop": "nodemon -q bin/www",
+    "build": "npx sequelize db:migrate",
     "db:create": "./node_modules/.bin/sequelize-cli db:create",
     "db:drop": "./node_modules/.bin/sequelize-cli db:drop",
     "db:migrate": "./node_modules/.bin/sequelize-cli db:migrate",
@@ -15,6 +16,7 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.1",
     "ejs": "^3.1.6",
     "express": "^4.17.3",
     "fs": "^0.0.1-security",
