@@ -4,8 +4,14 @@
  */
 
 /** Destruct environment variable to get database configuration */
+const path = require("path");
+require("dotenv").config(__dirname + "/../.env");
+
 const {
-  DB_USERNAME = "postgres", DB_PASSWORD = "mahendra", DB_HOST = "127.0.0.1", DB_NAME = "final_project"
+  DB_USERNAME,
+  DB_PASSWORD,
+  DB_HOST,
+  DB_NAME
 } = process.env;
 
 module.exports = {
