@@ -18,7 +18,7 @@ const {
 module.exports = {
   // Elephant SQL
   development: {
-    username: DB_USER,
+    username: DB_USERNAME,
     password: DB_PASSWORD,
     database: DB_NAME,
     host: DB_HOST,
@@ -34,7 +34,7 @@ module.exports = {
   },
   // Heroku Postgres
   production: {
-    username: DB_USER,
+    username: DB_USERNAME,
     password: DB_PASSWORD,
     database: DB_NAME,
     host: DB_HOST,
