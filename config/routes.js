@@ -81,6 +81,8 @@ apiRouter.put("/api/v1/products/:id",
 apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllProduct);
 apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.getProductbyId);
 
+apiRouter.get("/api/v1/getproductbyname", controllers.api.v1.productController.getProductbyName);
+
 /**
  * TODO: Delete this, this is just a demonstration of
  *       error handler
