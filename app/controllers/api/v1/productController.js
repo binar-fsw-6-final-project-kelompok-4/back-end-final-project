@@ -10,6 +10,7 @@ const createProduct = async (req, res) => {
             product_name: req.body.product_name,
             price: req.body.price,
             category: req.body.category,
+            available: true,
             product_img1: req.file.filename,
             seller_id: req.userlogin.id,
             createdAt: new Date(),
@@ -197,8 +198,7 @@ const getProductbyId = async (req, res, next) => {
                 res.status(200).json({
                     data: product,
                 });
-            } 
-            else {
+            } else {
                 res.status(404).json({
                     status: "FAIL",
                     message: "Product not found!",
@@ -208,34 +208,41 @@ const getProductbyId = async (req, res, next) => {
         .catch((err) => {
             res.status(400).send
         })
-    }
+}
 
-const filterProduct = async (req,res) =>{
+const filterProduct = async (req, res) => {
     try {
-        const data= product.findAll({where: {category: "filter"}})
+        const data = product.findAll({
+            where: {
+                category: "filter"
+            }
+        })
     } catch (error) {
-        
+
     }
 }
 
 const getAllUserProduct = async (req, res) => {
-    product.findAll({where: {price: req.userlogin.id}})
-    .then((product) => {
-        if (product) {
-            res.status(200).json({
-                data: product,
-            });
-        } 
-        else {
-            res.status(404).json({
-                status: "FAIL",
-                message: "Product not found!",
-            });
-        }
-    })
-    .catch((err) => {
-        res.status(400).send(err)
-    });
+    product.findAll({
+            where: {
+                price: req.userlogin.id
+            }
+        })
+        .then((product) => {
+            if (product) {
+                res.status(200).json({
+                    data: product,
+                });
+            } else {
+                res.status(404).json({
+                    status: "FAIL",
+                    message: "Product not found!",
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(400).send(err)
+        });
 
 };
 
