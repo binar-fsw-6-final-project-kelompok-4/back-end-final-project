@@ -69,6 +69,8 @@ apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllPr
 apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.getProductbyId);
 apiRouter.post("/api/v1/products/offer/:id", auth,controllers.api.v1.transactionController.firstOffer);
 
+apiRouter.get("/api/v1/getproductbyname", controllers.api.v1.productController.getProductbyName);
+
 /**
  * TODO: Delete this, this is just a demonstration of
  *       error handler
