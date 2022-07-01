@@ -144,7 +144,8 @@ const createUser = async (req, res) => {
         delete user_data.password;
 
         res.status(201).json({
-            user: user_data,
+            message: "User Created",
+            data: user_data,
         });
     } catch (err) {
         res.status(400).json({
