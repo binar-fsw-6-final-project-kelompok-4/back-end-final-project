@@ -3,10 +3,14 @@ const {
 } = require('../../../models')
 const fs = require("fs");
 const path = require("path");
+const {
+    Op
+} = require("sequelize");
+
 
 const createProduct = async (req, res) => {
     try {
-        const infoProduct = await product.create({
+        const productCreated = await product.create({
             product_name: req.body.product_name,
             price: req.body.price,
             category: req.body.category,
@@ -18,7 +22,7 @@ const createProduct = async (req, res) => {
         });
         res.status(201).send({
             message: "Product Created",
-            data: infoProduct
+            data: productCreated,
         });
     } catch (error) {
         res.status(400).json({
@@ -57,12 +61,12 @@ const createProduct = async (req, res) => {
 
 const updateProductById = async (req, res) => {
     try {
-        await product.findOne({
+        const findProduct = await product.findOne({
             where: {
                 id: req.params.id,
             },
         });
-        await product.update({
+        const productUpdated = await findProduct.update({
             product_name: req.body.product_name,
             price: req.body.price,
             category: req.body.category,
@@ -73,12 +77,12 @@ const updateProductById = async (req, res) => {
                 id: req.params.id
             }
         });
-        res.status(200).json({
+        res.status(200).send({
             message: "Product Updated",
-            data: product,
+            data: productUpdated,
         })
     } catch (error) {
-        res.status(400).json({
+        res.status(400).send({
             error: error.message
         });
     }
@@ -130,8 +134,14 @@ const deleteProductById = async (req, res) => {
 
 const listAllProduct = async (req, res) => {
     try {
-        const products = await product.findAll({where:{available:true}});
-        res.status(200).send({
+        const products = await product.findAll({
+            where: {
+                available: {
+                    [Op.eq]: true,
+                },
+            },
+        });
+        res.status(200).json({
             status: "OK",
             data : products
         });
@@ -141,30 +151,6 @@ const listAllProduct = async (req, res) => {
         });
     }
 };
-
-// const getProduct = async (req,res)=>{
-//     try {
-//         const data = product.findOne({where : {id: req.params.id}})
-//         res.status(200).send({
-//             status: 200,
-//             message: 'Data Product Ditemukan!',
-//             data: data
-//         })
-//     } catch (error) {
-//         res.status(404).json({
-//             status : 404,
-//             error : "produk tidak ditemukan"
-//         })
-//     }
-// }
-
-// const filterProduct = async (req,res) =>{
-//     try {
-//         const data= product.findAll({where: {category: "filter"}})
-//     } catch (error) {
-
-//     }
-// }
 
 // const getProduct = async (req,res)=>{
 //     try {

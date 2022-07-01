@@ -53,7 +53,8 @@ apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllPr
 apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.getProductbyId);
 
 //TRANSACTION
-apiRouter.post("/api/v1/products/offer/:id", auth,controllers.api.v1.transactionController.firstOffer);
+apiRouter.post("/api/v1/products/offer/:id", auth, controllers.api.v1.transactionController.firstOffer);
+apiRouter.get("/api/v1/products/offer/:id/:buyer_id", controllers.api.v1.transactionController.acceptedOffer)
 apiRouter.get("/api/v1/products/offer/data/:id",controllers.api.v1.transactionController.getTransaction);
 
 // apiRouter.get("/api/v1/getproductbyname", controllers.api.v1.productController.getProductbyName);

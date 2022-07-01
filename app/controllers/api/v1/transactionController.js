@@ -1,8 +1,9 @@
 const {
-    trancsaction, product
+    trancsaction,
+    product
 } = require('../../../models')
 
-const firstOffer= async (req,res) =>{
+const firstOffer = async (req, res) => {
     try {
         const sourceProduct = await product.findOne({where: {id :req.params.id}});
         const verifProduct = await trancsaction.findAll({where:{product_id : req.params.id,buyer_id: req.userlogin.id}})
@@ -47,10 +48,62 @@ const firstOffer= async (req,res) =>{
         data: first
     })
     } catch (error) {
-        res.status(201).json({
+        res.status(402).json({
             status: "FAIL",
             message: error.message,
         });
+    }
+}
+
+const acceptedOffer = async (req, res) => {
+    try {
+        const OnGoingoffer = await trancsaction.findOne({
+            where: {
+                product_id: req.params.id,
+                buyer_id: req.params.buyer_id
+            }
+        })
+
+        const accept = OnGoingoffer.update({
+            status: 2,
+            available: false
+        })
+        res.status(201).send({
+            status: 201,
+            message: 'Penawaran Diterima!',
+            data: accept
+        })
+    } catch (error) {
+        res.status(400).send({
+            status: "FAIL",
+            message: error.message,
+        })
+    }
+}
+
+const rejectedOffer = async (req, res) => {
+    try {
+        const OnGoingoffer = await trancsaction.findOne({
+            where: {
+                product_id: req.params.id,
+                buyer_id: req.params.buyer_id
+            }
+        })
+
+        const reject = OnGoingoffer.update({
+            status: 2,
+            available: false
+        })
+        res.status(201).send({
+            status: 201,
+            message: 'Penawaran Diterima!',
+            data: reject
+        })
+    } catch (error) {
+        res.status(400).send({
+            status: "FAIL",
+            message: error.message,
+        })
     }
 }
 
@@ -65,7 +118,7 @@ const getTransaction = async (req,res) =>{
     }
 }
 
-const updatOffer = async (req,res) =>{
+const updateOffer = async (req,res) =>{
     try {
         const sourceTransaction = await trancsaction.findOne({where: {id :req.params.id}, include : product})
         if (req.userlogin.id == sourceTransaction.buyer_id) {
@@ -80,5 +133,7 @@ const updatOffer = async (req,res) =>{
 }
 module.exports = {
     firstOffer,
+    acceptedOffer,
+    rejectedOffer,
     getTransaction
 };
