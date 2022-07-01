@@ -1,5 +1,5 @@
 const {
-    product
+    product,users
 } = require('../../../models')
 const fs = require("fs");
 const path = require("path");
@@ -14,9 +14,9 @@ const createProduct = async (req, res) => {
             product_name: req.body.product_name,
             price: req.body.price,
             category: req.body.category,
-            available: true,
             product_img1: req.file.filename,
             seller_id: req.userlogin.id,
+            available:true,
             createdAt: new Date(),
             updatedAt: new Date(),
         });
@@ -143,7 +143,7 @@ const listAllProduct = async (req, res) => {
         });
         res.status(200).json({
             status: "OK",
-            products,
+            data : products
         });
     } catch (error) {
         res.status(400).json({
@@ -178,13 +178,14 @@ const listAllProduct = async (req, res) => {
 
 
 const getProductbyId = async (req, res, next) => {
-    product.findByPk(req.params.id)
+    product.findOne({where: {id:req.params.id},include:users})
         .then((product) => {
             if (product) {
                 res.status(200).json({
                     data: product,
                 });
-            } else {
+            } 
+            else {
                 res.status(404).json({
                     status: "FAIL",
                     message: "Product not found!",
@@ -194,50 +195,50 @@ const getProductbyId = async (req, res, next) => {
         .catch((err) => {
             res.status(400).send
         })
-}
+    }
 
-const filterProduct = async (req, res) => {
+const filterProduct = async (req,res) =>{
     try {
-        const data = product.findAll({
-            where: {
-                category: "filter"
-            }
-        })
+        const data= product.findAll({where: {category: "filter"}})
     } catch (error) {
-
+        res.status(400).send
     }
 }
 
 const getAllUserProduct = async (req, res) => {
-    product.findAll({
-            where: {
-                price: req.userlogin.id
-            }
-        })
-        .then((product) => {
-            if (product) {
-                res.status(200).json({
-                    data: product,
-                });
-            } else {
-                res.status(404).json({
-                    status: "FAIL",
-                    message: "Product not found!",
-                });
-            }
-        })
-        .catch((err) => {
-            res.status(400).send(err)
-        });
+    product.findAll({where: {price: req.userlogin.id}})
+    .then((product) => {
+        if (product) {
+            res.status(200).json({
+                data: product,
+            });
+        } 
+        else {
+            res.status(404).json({
+                status: "FAIL",
+                message: "Product not found!",
+            });
+        }
+    })
+    .catch((err) => {
+        res.status(400).send(err)
+    });
 
 };
-
-
+const softDelete = async (req,res)=>{
+try {
+    product.update({available:false},{where: {id:req.params.id}, returning:true})
+} catch (error) {
+    
+}
+}
 
 module.exports = {
     createProduct,
     deleteProductById,
     updateProductById,
     listAllProduct,
-    getProductbyId
+    getProductbyId,
+    getAllUserProduct,
+    softDelete
 }
