@@ -97,7 +97,7 @@ const login = async (req, res) => {
 
         res.status(200).send({
             status: 200,
-            message: 'Login succses',
+            message: 'Login success',
             data: {
                 token: token,
                 user: secureuser
