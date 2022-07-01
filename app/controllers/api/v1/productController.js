@@ -1,23 +1,24 @@
 const {
-    product
+    product,users
 } = require('../../../models')
 const fs = require("fs");
 const path = require("path");
 
 const createProduct = async (req, res) => {
     try {
-        await product.create({
+        const infoProduct = await product.create({
             product_name: req.body.product_name,
             price: req.body.price,
             category: req.body.category,
             product_img1: req.file.filename,
             seller_id: req.userlogin.id,
+            available:true,
             createdAt: new Date(),
             updatedAt: new Date(),
         });
-        res.status(201).json({
+        res.status(201).send({
             message: "Product Created",
-            data: product,
+            data: infoProduct
         });
     } catch (error) {
         res.status(400).json({
@@ -129,10 +130,10 @@ const deleteProductById = async (req, res) => {
 
 const listAllProduct = async (req, res) => {
     try {
-        const products = await product.findAll();
-        res.status(200).json({
+        const products = await product.findAll({include : users});
+        res.status(200).send({
             status: "OK",
-            products,
+            data : products
         });
     } catch (error) {
         res.status(400).json({
@@ -191,7 +192,7 @@ const listAllProduct = async (req, res) => {
 
 
 const getProductbyId = async (req, res, next) => {
-    product.findByPk(req.params.id)
+    product.findOne({where: {id:req.params.id},include:users})
         .then((product) => {
             if (product) {
                 res.status(200).json({
@@ -214,7 +215,7 @@ const filterProduct = async (req,res) =>{
     try {
         const data= product.findAll({where: {category: "filter"}})
     } catch (error) {
-        
+        res.status(400).send
     }
 }
 
@@ -238,13 +239,20 @@ const getAllUserProduct = async (req, res) => {
     });
 
 };
-
-
+const softDelete = async (req,res)=>{
+try {
+    product.update({available:false},{where: {id:req.params.id}, returning:true})
+} catch (error) {
+    
+}
+}
 
 module.exports = {
     createProduct,
     deleteProductById,
     updateProductById,
     listAllProduct,
-    getProductbyId
+    getProductbyId,
+    getAllUserProduct,
+    softDelete
 }

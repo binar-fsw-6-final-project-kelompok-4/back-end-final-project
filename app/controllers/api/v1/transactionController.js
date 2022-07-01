@@ -4,8 +4,10 @@ const {
 
 const firstOffer= async (req,res) =>{
     try {
-        const sourceProduct = await product.findOne({where: {id :req.params.id}})
-        
+        const sourceProduct = await product.findOne({where: {id :req.params.id}});
+        const verifProduct = await trancsaction.findAll({where:{product_id : req.params.id,buyer_id: req.userlogin.id}})
+        // const verifBuyer = await verifProduct.findOne({where:{buyer_id : req.userlogin.id}})
+
         if (sourceProduct.seller_id == req.userlogin.id) {
             return(
             res.status(400).json({
@@ -13,6 +15,15 @@ const firstOffer= async (req,res) =>{
             })
             )
         }
+
+        if (verifProduct) {
+            return(
+                res.status(201).json({
+                    error: "Anda sudah punya tawaran produk ini!"
+                })
+                )
+        }
+
 
         if (req.body.offer > sourceProduct.price ) {
             return(
@@ -25,7 +36,7 @@ const firstOffer= async (req,res) =>{
         product_id: req.params.id,
         seller_id: sourceProduct.seller_id,
         buyer_id: req.userlogin.id,
-        status: 1,  
+        status: 1,
         offer: req.body.offer
        })
 
@@ -42,17 +53,31 @@ const firstOffer= async (req,res) =>{
     }
 }
 
+const getTransaction = async (req,res) =>{
+    try {
+        const sourceTransaction = await trancsaction.findOne({where: {id :req.params.id}, include : product})
+        res.status(201).send({
+            status : 201,
+            data : sourceTransaction
+        })
+    } catch (error) {
+    }
+}
+
 const updatOffer = async (req,res) =>{
     try {
-        const sourceProduct = await trancsaction.findOne({where: {product_id :req.params.id}})
-        const sourceTransaction = await sourceProduct.findOne({where: {buyer_id :req.userlogin.id}})
-        if (req.userlogin.id == ) {
-            
+        const sourceTransaction = await trancsaction.findOne({where: {id :req.params.id}, include : product})
+        if (req.userlogin.id == sourceTransaction.buyer_id) {
+            const offer = await trancsaction.update({offer: req.body.offer},{where :{} })
+        }
+        else if (req.userlogin.id == sourceTransaction.product.seller_id){
+
         }
     } catch (error) {
         
     }
 }
 module.exports = {
-    firstOffer
+    firstOffer,
+    getTransaction
 };

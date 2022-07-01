@@ -69,7 +69,10 @@ apiRouter.delete("/api/v1/products/:id",
 apiRouter.put("/api/v1/products/:id", upload.single("product_img1"), controllers.api.v1.productController.updateProductById);
 apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllProduct);
 apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.getProductbyId);
+
+//TRANSACTION
 apiRouter.post("/api/v1/products/offer/:id", auth,controllers.api.v1.transactionController.firstOffer);
+apiRouter.get("/api/v1/products/offer/data/:id",controllers.api.v1.transactionController.getTransaction);
 
 /**
  * TODO: Delete this, this is just a demonstration of
