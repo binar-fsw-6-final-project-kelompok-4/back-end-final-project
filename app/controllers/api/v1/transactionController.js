@@ -16,13 +16,14 @@ const firstOffer= async (req,res) =>{
             )
         }
 
-        if (verifProduct) {
-            return(
-                res.status(201).json({
-                    error: "Anda sudah punya tawaran produk ini!"
-                })
-                )
-        }
+        // if (verifProduct) {
+        //     return(
+        //         res.status(201).json({
+        //             error: "Anda sudah punya tawaran produk ini!",
+        //             data : verifProduct
+        //         })
+        //         )
+        // }
 
 
         if (req.body.offer > sourceProduct.price ) {

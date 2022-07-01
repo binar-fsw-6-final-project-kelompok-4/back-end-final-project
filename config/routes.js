@@ -34,23 +34,7 @@ appRouter.get("/", controllers.main.index);
  * TODO: Implement your own API
  *       implementations
  */
-apiRouter.get("/api/v1/posts", controllers.api.v1.post.list);
-apiRouter.post("/api/v1/posts", controllers.api.v1.post.create);
-apiRouter.put(
-  "/api/v1/posts/:id",
-  controllers.api.v1.post.setPost,
-  controllers.api.v1.post.update
-);
-apiRouter.get(
-  "/api/v1/posts/:id",
-  controllers.api.v1.post.setPost,
-  controllers.api.v1.post.show
-);
-apiRouter.delete(
-  "/api/v1/posts/:id",
-  controllers.api.v1.post.setPost,
-  controllers.api.v1.post.destroy
-);
+
 
 //USER
 apiRouter.post("/api/v1/users/add", controllers.api.v1.userController.createUser);
@@ -72,7 +56,7 @@ apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.get
 apiRouter.post("/api/v1/products/offer/:id", auth,controllers.api.v1.transactionController.firstOffer);
 apiRouter.get("/api/v1/products/offer/data/:id",controllers.api.v1.transactionController.getTransaction);
 
-apiRouter.get("/api/v1/getproductbyname", controllers.api.v1.productController.getProductbyName);
+// apiRouter.get("/api/v1/getproductbyname", controllers.api.v1.productController.getProductbyName);
 
 /**
  * TODO: Delete this, this is just a demonstration of

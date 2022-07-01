@@ -130,7 +130,7 @@ const deleteProductById = async (req, res) => {
 
 const listAllProduct = async (req, res) => {
     try {
-        const products = await product.findAll({include : users});
+        const products = await product.findAll({where:{available:true}});
         res.status(200).send({
             status: "OK",
             data : products
