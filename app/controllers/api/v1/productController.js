@@ -205,6 +205,35 @@ const filterProduct = async (req,res) =>{
     }
 }
 
+  const getProductbyName = async (req, res) => {
+    product.findAll({ 
+
+        where: {
+
+        product_name: {
+            [Op.like]: '%' + req.query.product_name.toLowerCase() + '%'
+
+        }
+    }
+
+    }).then((product) => {
+            if (product) {
+                res.status(200).json({
+                    data: product,
+                });
+            } 
+            else {
+                res.status(404).json({
+                    status: "FAIL",
+                    message: "Product not found!",
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(400).send(err)
+        });
+};
+
 const getAllUserProduct = async (req, res) => {
     product.findAll({where: {price: req.userlogin.id}})
     .then((product) => {
@@ -240,5 +269,6 @@ module.exports = {
     listAllProduct,
     getProductbyId,
     getAllUserProduct,
-    softDelete
+    softDelete,
+    getProductbyName
 }
