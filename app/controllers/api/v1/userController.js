@@ -8,7 +8,6 @@ const updateProfile = async (req, res) => {
     try {
         const data = await users.update({
             username: req.body.username,
-            profile_img: req.file.filename,
             address: req.body.address,
             contact: req.body.contact,
             city: req.body.city,
@@ -19,6 +18,15 @@ const updateProfile = async (req, res) => {
             },
             returning: true
         })
+        let fotoProfile;
+        let fileBase64;
+        let file;
+        const user = await users.findByPk({
+            where: {
+                id: req.params.id
+            }
+        })
+        const user_data = JSON.parse(JSON.stringify(user));
         const userInfo = await users.findOne({
             where: {
                 id: req.userlogin.id
