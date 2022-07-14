@@ -3,7 +3,6 @@ const controllers = require("../app/controllers");
 // const upload = require("../app/middleware/multer");
 const multer = require("multer");
 const storage = require("../services/multer.service");
-const app = express()
 const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
@@ -28,7 +27,7 @@ const buyerSeller = require("../app/middleware/buyerSeller");
 
 const appRouter = express.Router();
 const apiRouter = express.Router();
-app.use(cors());
+apiRouter.use(cors());
 
 /** Mount GET / handler */
 appRouter.get("/", controllers.main.index);
