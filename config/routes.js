@@ -27,6 +27,9 @@ const buyerSeller = require("../app/middleware/buyerSeller");
 
 const appRouter = express.Router();
 const apiRouter = express.Router();
+app.use(cors({
+  origin: '*'
+}));
 
 /** Mount GET / handler */
 appRouter.get("/", controllers.main.index);
@@ -35,9 +38,6 @@ appRouter.get("/", controllers.main.index);
  * TODO: Implement your own API
  *       implementations
  */
- app.use(cors({
-  origin: '*'
-}));
 
 //USER
 apiRouter.post("/api/v1/users/add",  controllers.api.v1.userController.createUser);
