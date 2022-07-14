@@ -18,7 +18,7 @@ const upload = multer({
     }
   },
 });
-
+const cors = require("cors")
 
 const auth = require("../app/middleware/auth");
 const sellerAuth = require("../app/middleware/sellerAuth");
@@ -34,7 +34,7 @@ appRouter.get("/", controllers.main.index);
  * TODO: Implement your own API
  *       implementations
  */
-
+ app.use(cors())
 
 //USER
 apiRouter.post("/api/v1/users/add", controllers.api.v1.userController.createUser);
