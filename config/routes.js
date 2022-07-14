@@ -28,7 +28,8 @@ const buyerSeller = require("../app/middleware/buyerSeller");
 const appRouter = express.Router();
 const apiRouter = express.Router();
 app.use(cors({
-  origin: 'http://localhost:3000'
+  origin: 'http://localhost:3000',
+  methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
 }));
 
 /** Mount GET / handler */
@@ -40,7 +41,7 @@ appRouter.get("/", controllers.main.index);
  */
 
 //USER
-apiRouter.post("/api/v1/users/add",  controllers.api.v1.userController.createUser);
+apiRouter.post("/api/v1/users/add", cors(), controllers.api.v1.userController.createUser);
 apiRouter.put("/api/v1/users/profile/edit", auth, upload.single("profile_img"), controllers.api.v1.userController.updateProfile);
 apiRouter.post("/api/v1/users/login", controllers.api.v1.userController.login);
 apiRouter.get("/api/v1/users/profile", auth, controllers.api.v1.userController.infoUser);
