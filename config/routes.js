@@ -27,7 +27,9 @@ const buyerSeller = require("../app/middleware/buyerSeller");
 
 const appRouter = express.Router();
 const apiRouter = express.Router();
-apiRouter.use(cors());
+apiRouter.use(cors({
+  origin : "*"
+}));
 
 /** Mount GET / handler */
 appRouter.get("/", controllers.main.index);
