@@ -1,4 +1,4 @@
-const { Transaction } = require('sequelize/types');
+
 const {
     trancsaction,
     product

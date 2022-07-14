@@ -19,7 +19,6 @@ const upload = multer({
   },
 });
 const cors = require("cors")
-const corsMid = require("../app/middleware/cors")
 
 const auth = require("../app/middleware/auth");
 const sellerAuth = require("../app/middleware/sellerAuth");
@@ -27,9 +26,8 @@ const buyerSeller = require("../app/middleware/buyerSeller");
 
 const appRouter = express.Router();
 const apiRouter = express.Router();
-apiRouter.use(cors({
-  origin : "*"
-}));
+
+apiRouter.use(cors());
 
 /** Mount GET / handler */
 appRouter.get("/", controllers.main.index);
