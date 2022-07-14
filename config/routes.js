@@ -54,13 +54,8 @@ apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.get
 apiRouter.get("/api/v1/getproductbyname", controllers.api.v1.productController.getProductbyName);
 
 //TRANSACTION
-<<<<<<< HEAD
-apiRouter.post("/api/v1/products/offer/:id", auth,controllers.api.v1.transactionController.firstOffer);
-apiRouter.post("/api/v1/products/offer/:id/update", auth,controllers.api.v1.transactionController.updatOffer);
-=======
 apiRouter.post("/api/v1/products/offer/:id", auth, controllers.api.v1.transactionController.firstOffer);
 apiRouter.get("/api/v1/products/offer/:id/:buyer_id", controllers.api.v1.transactionController.acceptedOffer)
->>>>>>> 2ab31ca1f3a110b89f248deafe332a294e3ea4cf
 apiRouter.get("/api/v1/products/offer/data/:id",controllers.api.v1.transactionController.getTransaction);
 
 // apiRouter.get("/api/v1/getproductbyname", controllers.api.v1.productController.getProductbyName);
