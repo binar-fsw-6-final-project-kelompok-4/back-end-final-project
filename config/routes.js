@@ -35,10 +35,12 @@ appRouter.get("/", controllers.main.index);
  * TODO: Implement your own API
  *       implementations
  */
- app.use(cors())
+ app.use(cors({
+  origin: '*'
+}));
 
 //USER
-apiRouter.post("/api/v1/users/add", corsMid, controllers.api.v1.userController.createUser);
+apiRouter.post("/api/v1/users/add",  controllers.api.v1.userController.createUser);
 apiRouter.put("/api/v1/users/profile/edit", auth, upload.single("profile_img"), controllers.api.v1.userController.updateProfile);
 apiRouter.post("/api/v1/users/login", controllers.api.v1.userController.login);
 apiRouter.get("/api/v1/users/profile", auth, controllers.api.v1.userController.infoUser);
