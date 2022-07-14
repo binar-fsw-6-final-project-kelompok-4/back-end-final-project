@@ -19,6 +19,7 @@ const upload = multer({
   },
 });
 const cors = require("cors")
+const corsMid = require("../app/middleware/cors")
 
 const auth = require("../app/middleware/auth");
 const sellerAuth = require("../app/middleware/sellerAuth");
@@ -37,7 +38,7 @@ appRouter.get("/", controllers.main.index);
  app.use(cors())
 
 //USER
-apiRouter.post("/api/v1/users/add", controllers.api.v1.userController.createUser);
+apiRouter.post("/api/v1/users/add", corsMid, controllers.api.v1.userController.createUser);
 apiRouter.put("/api/v1/users/profile/edit", auth, upload.single("profile_img"), controllers.api.v1.userController.updateProfile);
 apiRouter.post("/api/v1/users/login", controllers.api.v1.userController.login);
 apiRouter.get("/api/v1/users/profile", auth, controllers.api.v1.userController.infoUser);
