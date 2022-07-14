@@ -1,3 +1,4 @@
+const { Transaction } = require('sequelize/types');
 const {
     trancsaction, product
 } = require('../../../models')
@@ -5,8 +6,8 @@ const {
 const firstOffer= async (req,res) =>{
     try {
         const sourceProduct = await product.findOne({where: {id :req.params.id}});
-        const verifProduct = await trancsaction.findAll({where:{product_id : req.params.id,buyer_id: req.userlogin.id}})
-        // const verifBuyer = await verifProduct.findOne({where:{buyer_id : req.userlogin.id}})
+        const verifProduct = await trancsaction.findOne({where:{product_id : req.params.id,buyer_id: req.userlogin.id}})
+        // const verifBuyer = await verifProduct.findOne({where:{buyer_id : req.userlogin.id,product_id:req.params.id}})
 
         if (sourceProduct.seller_id == req.userlogin.id) {
             return(
@@ -16,14 +17,14 @@ const firstOffer= async (req,res) =>{
             )
         }
 
-        // if (verifProduct) {
-        //     return(
-        //         res.status(201).json({
-        //             error: "Anda sudah punya tawaran produk ini!",
-        //             data : verifProduct
-        //         })
-        //         )
-        // }
+        if (verifProduct.buyer_id == req.userlogin.id && verifProduct.status == 1 ) {
+            return(
+                res.status(201).json({
+                    error: "Anda sudah punya tawaran produk ini!",
+                    data : verifProduct
+                })
+                )
+        }
 
 
         if (req.body.offer > sourceProduct.price ) {
@@ -65,20 +66,45 @@ const getTransaction = async (req,res) =>{
     }
 }
 
-const updatOffer = async (req,res) =>{
-    try {
-        const sourceTransaction = await trancsaction.findOne({where: {id :req.params.id}, include : product})
-        if (req.userlogin.id == sourceTransaction.buyer_id) {
-            const offer = await trancsaction.update({offer: req.body.offer},{where :{} })
-        }
-        else if (req.userlogin.id == sourceTransaction.product.seller_id){
+// const updatOffer = async (req,res) =>{
+//     try {
+//         const buyerTransaction = await Trancsaction.findOne({where: {product_id :req.params.id,buyer_id:req.userlogin.id}, include : user})
+//         const sellerTransaction = await Trancsaction.findOne({where: {product_id :req.params.id,seller_id:req.userlogin.id}, include : user})
 
-        }
-    } catch (error) {
+//         if (buyerTransaction.buyer_id == req.userlogin.id) {
+//             if 
+//             const offer = await trancsaction.update({offer: req.body.offer},{where :{product_id :req.params.id,buyer_id:req.userlogin.id} })
+//             return (
+//                 res.status(201).send({
+//                     status: 201,
+//                     message: 'Tawaran dinaikan!',
+//                     data: offer
+//                 })
+//             )
+//         }
+//         else if(sellerTransaction.seller_id == req.userlogin.id){
+//             const offer = await trancsaction.update({offer: req.body.offer},{where :{product_id :req.params.id,seller_id:req.userlogin.id} })
+//             return (
+//                 res.status(201).send({
+//                     status: 201,
+//                     message: 'Tawaran diturunkan!',
+//                     data: offer
+//                 })
+//             )
+//         }
+//         else{
+//             return(
+//                 res.status(500).send(error)
+//             )
+//         }
+
         
-    }
-}
+
+//     } catch (error) {
+//         res.status(500).send(error)
+//     }
+// }
 module.exports = {
     firstOffer,
-    getTransaction
+    getTransaction,
 };

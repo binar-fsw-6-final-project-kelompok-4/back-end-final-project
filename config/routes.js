@@ -18,7 +18,7 @@ const upload = multer({
     }
   },
 });
-
+const cors = require("cors")
 
 const auth = require("../app/middleware/auth");
 const sellerAuth = require("../app/middleware/sellerAuth");
@@ -34,7 +34,7 @@ appRouter.get("/", controllers.main.index);
  * TODO: Implement your own API
  *       implementations
  */
-
+ app.use(cors())
 
 //USER
 apiRouter.post("/api/v1/users/add", controllers.api.v1.userController.createUser);
@@ -54,6 +54,7 @@ apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.get
 
 //TRANSACTION
 apiRouter.post("/api/v1/products/offer/:id", auth,controllers.api.v1.transactionController.firstOffer);
+apiRouter.post("/api/v1/products/offer/:id/update", auth,controllers.api.v1.transactionController.updatOffer);
 apiRouter.get("/api/v1/products/offer/data/:id",controllers.api.v1.transactionController.getTransaction);
 
 // apiRouter.get("/api/v1/getproductbyname", controllers.api.v1.productController.getProductbyName);
