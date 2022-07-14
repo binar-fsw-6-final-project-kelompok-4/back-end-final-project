@@ -1,9 +1,10 @@
 const { Transaction } = require('sequelize/types');
 const {
-    trancsaction, product
+    trancsaction,
+    product
 } = require('../../../models')
 
-const firstOffer= async (req,res) =>{
+const firstOffer = async (req, res) => {
     try {
         const sourceProduct = await product.findOne({where: {id :req.params.id}});
         const verifProduct = await trancsaction.findOne({where:{product_id : req.params.id,buyer_id: req.userlogin.id}})
@@ -48,10 +49,62 @@ const firstOffer= async (req,res) =>{
         data: first
     })
     } catch (error) {
-        res.status(201).json({
+        res.status(402).json({
             status: "FAIL",
             message: error.message,
         });
+    }
+}
+
+const acceptedOffer = async (req, res) => {
+    try {
+        const OnGoingoffer = await trancsaction.findOne({
+            where: {
+                product_id: req.params.id,
+                buyer_id: req.params.buyer_id
+            }
+        })
+
+        const accept = OnGoingoffer.update({
+            status: 2,
+            available: false
+        })
+        res.status(201).send({
+            status: 201,
+            message: 'Penawaran Diterima!',
+            data: accept
+        })
+    } catch (error) {
+        res.status(400).send({
+            status: "FAIL",
+            message: error.message,
+        })
+    }
+}
+
+const rejectedOffer = async (req, res) => {
+    try {
+        const OnGoingoffer = await trancsaction.findOne({
+            where: {
+                product_id: req.params.id,
+                buyer_id: req.params.buyer_id
+            }
+        })
+
+        const reject = OnGoingoffer.update({
+            status: 2,
+            available: false
+        })
+        res.status(201).send({
+            status: 201,
+            message: 'Penawaran Diterima!',
+            data: reject
+        })
+    } catch (error) {
+        res.status(400).send({
+            status: "FAIL",
+            message: error.message,
+        })
     }
 }
 
@@ -66,45 +119,23 @@ const getTransaction = async (req,res) =>{
     }
 }
 
-// const updatOffer = async (req,res) =>{
+// const updateOffer = async (req,res) =>{
 //     try {
-//         const buyerTransaction = await Trancsaction.findOne({where: {product_id :req.params.id,buyer_id:req.userlogin.id}, include : user})
-//         const sellerTransaction = await Trancsaction.findOne({where: {product_id :req.params.id,seller_id:req.userlogin.id}, include : user})
-
-//         if (buyerTransaction.buyer_id == req.userlogin.id) {
-//             if 
-//             const offer = await trancsaction.update({offer: req.body.offer},{where :{product_id :req.params.id,buyer_id:req.userlogin.id} })
-//             return (
-//                 res.status(201).send({
-//                     status: 201,
-//                     message: 'Tawaran dinaikan!',
-//                     data: offer
-//                 })
-//             )
+//         const sourceTransaction = await trancsaction.findOne({where: {id :req.params.id}, include : product})
+//         if (req.userlogin.id == sourceTransaction.buyer_id) {
+//             const offer = await trancsaction.update({offer: req.body.offer},{where :{} })
 //         }
-//         else if(sellerTransaction.seller_id == req.userlogin.id){
-//             const offer = await trancsaction.update({offer: req.body.offer},{where :{product_id :req.params.id,seller_id:req.userlogin.id} })
-//             return (
-//                 res.status(201).send({
-//                     status: 201,
-//                     message: 'Tawaran diturunkan!',
-//                     data: offer
-//                 })
-//             )
-//         }
-//         else{
-//             return(
-//                 res.status(500).send(error)
-//             )
-//         }
+//         else if (req.userlogin.id == sourceTransaction.product.seller_id){
 
         
 
-//     } catch (error) {
-//         res.status(500).send(error)
-//     }
-// }
+// //     } catch (error) {
+// //         res.status(500).send(error)
+// //     }
+//  }
 module.exports = {
     firstOffer,
-    getTransaction,
+    acceptedOffer,
+    rejectedOffer,
+    getTransaction
 };
