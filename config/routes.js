@@ -2,8 +2,6 @@ const express = require("express");
 const controllers = require("../app/controllers");
 // const upload = require("../app/middleware/multer");
 // const multer = require("multer");
-const upload = require("../utils/upload");
-const uploadOnMemory = require("../utils/memoryUpload");
 // const storage = require("../services/multer.service");
 // const upload = multer({
 //   storage: storage,
@@ -21,6 +19,10 @@ const uploadOnMemory = require("../utils/memoryUpload");
 //   },
 // });
 
+const upload = require("../utils/upload");
+const uploadOnMemory = require("../utils/memoryUpload");
+
+const cors = require("cors")
 
 const auth = require("../app/middleware/auth");
 const sellerAuth = require("../app/middleware/sellerAuth");
@@ -29,6 +31,8 @@ const buyerSeller = require("../app/middleware/buyerSeller");
 const appRouter = express.Router();
 const apiRouter = express.Router();
 
+apiRouter.use(cors());
+
 /** Mount GET / handler */
 appRouter.get("/", controllers.main.index);
 
@@ -36,7 +40,6 @@ appRouter.get("/", controllers.main.index);
  * TODO: Implement your own API
  *       implementations
  */
-
 
 //USER
 apiRouter.post("/api/v1/users/add", controllers.api.v1.userController.createUser);
@@ -53,6 +56,7 @@ apiRouter.delete("/api/v1/products/:id", sellerAuth, controllers.api.v1.productC
 apiRouter.put("/api/v1/products/:id", sellerAuth, uploadOnMemory.array("img", 4), controllers.api.v1.productController.updateProductById);
 apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllProduct);
 apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.getProductbyId);
+apiRouter.get("/api/v1/getproductbyname", controllers.api.v1.productController.getProductbyName);
 
 //TRANSACTION
 apiRouter.post("/api/v1/products/offer/:id", auth, controllers.api.v1.transactionController.firstOffer);
