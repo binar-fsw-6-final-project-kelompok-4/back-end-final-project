@@ -15,6 +15,7 @@ const createProduct = async (req, res) => {
             price: req.body.price,
             category: req.body.category,
             product_img1: req.file.filename,
+            description : req.body.description,
             seller_id: req.userlogin.id,
             available:true,
             createdAt: new Date(),
