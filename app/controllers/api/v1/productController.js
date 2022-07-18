@@ -1,5 +1,5 @@
 const {
-    product,users
+    product,users,image
 } = require('../../../models')
 const fs = require("fs");
 const path = require("path");
@@ -141,6 +141,7 @@ const listAllProduct = async (req, res) => {
                     [Op.eq]: true,
                 },
             },
+            include : users,image
         });
         res.status(200).json({
             status: "OK",
