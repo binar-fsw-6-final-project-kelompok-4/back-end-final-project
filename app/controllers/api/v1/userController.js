@@ -1,14 +1,75 @@
 const bcrypt = require("bcryptjs");
 const {
     users
-} = require('../../../models')
-const jwt = require('../../../helper/jwt')
+} = require('../../../models');
+const jwt = require('../../../helper/jwt');
+const {
+    promisify
+} = require("util");
+const cloudinary = require("../../../../utils/cloudinary");
+const cloudinaryUpload = promisify(cloudinary.uploader.upload);
+const cloudinaryDestroy = promisify(cloudinary.uploader.destroy);
 
 const updateProfile = async (req, res) => {
     try {
+        // const {
+        //     seller_id,
+        //     username,
+        //     name,
+        //     address,
+        //     contact,
+        //     city
+        // } = req.body;
+        // let fotoProfile;
+        // let fileBase64;
+        // let file;
+
+        // const user = await users.findByPk(seller_id);
+        // const user_data = JSON.parse(JSON.stringify(user));
+
+        // if (req.file) {
+        //     // Delete Image from Cloudinary
+        //     if (user.profile_img !== null) {
+        //         let cloudImage = user_data.profile_img.substring(62, 82);
+        //         cloudinaryDestroy(cloudImage);
+        //     }
+        //     // Upload New Image to Cloudinary
+        //     fileBase64 = req.file.buffer.toString("base64");
+        //     file = `data:${req.file.mimetype};base64,${fileBase64}`;
+        //     const resultImage = await cloudinaryUpload(file);
+        //     fotoProfile = resultImage.secure_url;
+        //     await users.update(seller_id, {
+        //         username,
+        //         name,
+        //         alamat,
+        //         address,
+        //         contact,
+        //         city,
+        //         profile_img: fotoProfile,
+        //     });
+        //     return res.status(200).json({
+        //         status: "OK",
+        //         message: "Profile berhasil diperbarui",
+        //         data: JSON.parse(JSON.stringify(user)),
+        //     });
+        // }
+
+        // await users.update(seller_id, {
+        //     username,
+        //     name,
+        //     alamat,
+        //     address,
+        //     contact,
+        //     city,
+        // });
+
+        // res.status(200).json({
+        //     status: "OK",
+        //     message: "Profile berhasil diperbarui",
+        //     data: JSON.parse(JSON.stringify(user)),
+        // });
         const data = await users.update({
             username: req.body.username,
-            profile_img: req.file.filename,
             address: req.body.address,
             contact: req.body.contact,
             city: req.body.city,
@@ -19,17 +80,18 @@ const updateProfile = async (req, res) => {
             },
             returning: true
         })
+
         const userInfo = await users.findOne({
             where: {
                 id: req.userlogin.id
             }
         })
+
         if (
             userInfo.name == null ||
             userInfo.address == null ||
             userInfo.contact == null ||
-            userInfo.city == null ||
-            userInfo.profile_img == null
+            userInfo.city == null
         ) {
             return (
                 res.status(201).send({
@@ -57,12 +119,10 @@ const updateProfile = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({
-            status: "FAIL",
-            message: error.message,
+            error: error.message,
         });
-
-
     }
+
 }
 
 

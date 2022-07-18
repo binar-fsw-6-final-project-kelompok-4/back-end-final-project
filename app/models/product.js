@@ -1,7 +1,9 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-  const { Model } = sequelize.Sequelize
+  const {
+    Model
+  } = sequelize.Sequelize
   class product extends Model {
     /**
      * Helper method for defining associations.
@@ -10,9 +12,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasOne(models.trancsaction, { foreignKey: 'product_id'})
-      this.belongsTo(models.users,{ foreignKey: 'id'})
-      this.hasMany(models.image, {foreignKey: "product_id"})
+      this.hasOne(models.trancsaction, {
+        foreignKey: 'product_id'
+      })
+      this.belongsTo(models.users, {
+        foreignKey: 'id'
+      })
+      product.hasMany(models.image, {
+        foreignKey: 'product_id'
+      })
     }
   }
   product.init({

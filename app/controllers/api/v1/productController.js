@@ -1,29 +1,55 @@
 const {
-    product,users,image
+    product,
+    users,
+    image,
 } = require('../../../models')
 const fs = require("fs");
 const path = require("path");
 const {
     Op
 } = require("sequelize");
+const cloudinary = require("../../../../utils/cloudinary");
+const {
+    promisify
+} = require('util');
+const cloudinaryUpload = promisify(cloudinary.uploader.upload);
+const cloudinaryDestroy = promisify(cloudinary.uploader.destroy);
 
 
 const createProduct = async (req, res) => {
     try {
+        let fotoProduk = [];
+        let fileBase64 = [];
+        let file = [];
         const productCreated = await product.create({
             product_name: req.body.product_name,
             price: req.body.price,
             category: req.body.category,
-            product_img1: req.file.filename,
             description : req.body.description,
             seller_id: req.userlogin.id,
-            available:true,
+            available: true,
             createdAt: new Date(),
             updatedAt: new Date(),
         });
+        for (var i = 0; i < req.files.length; i++) {
+            fileBase64.push(req.files[i].buffer.toString("base64"));
+            file.push(`data:${req.files[i].mimetype};base64,${fileBase64[i]}`);
+            const result = await cloudinaryUpload(file[i]);
+            fotoProduk.push(result.secure_url);
+            await image.create({
+                product_id: productCreated.id,
+                img: fotoProduk[i],
+            });
+        }
+
+        const response_data = await product.findByPk(productCreated.id, {
+            include: [{
+                model: image
+            }]
+        });
         res.status(201).send({
             message: "Product Created",
-            data: productCreated,
+            data: response_data,
         });
     } catch (error) {
         res.status(400).json({
@@ -62,25 +88,52 @@ const createProduct = async (req, res) => {
 
 const updateProductById = async (req, res) => {
     try {
-        const findProduct = await product.findOne({
-            where: {
-                id: req.params.id,
-            },
-        });
-        const productUpdated = await findProduct.update({
+        let fotoProduk = [];
+        let fileBase64 = [];
+        let file = [];
+        const id = req.params.id;
+        const productUpdated = await product.update({
             product_name: req.body.product_name,
             price: req.body.price,
             category: req.body.category,
-            product_img1: req.file.filename,
             updatedAt: new Date(),
         }, {
             where: {
-                id: req.params.id
+                id
             }
         });
+        const productPic = await image.findAll({
+            where: {
+                product_id: id
+            }
+        });
+        let cloudImage;
+
+        if (req.files.length > 0) {
+            if (productPic.length > 0) {
+                for (var i = 0; i < productPic.length; i++) {
+                    cloudImage = productPic[i].img.substring(62, 82);
+                    cloudinaryDestroy(cloudImage);
+                }
+            }
+            await image.destroy({
+                where: {
+                    product_id: id
+                }
+            })
+            for (var i = 0; i < req.files.length; i++) {
+                fileBase64.push(req.files[i].buffer.toString("base64"));
+                file.push(`data:${req.files[i].mimetype};base64,${fileBase64[i]}`);
+                const result = await cloudinaryUpload(file[i]);
+                fotoProduk.push(result.secure_url);
+                await image.create({
+                    product_id: id,
+                    img: fotoProduk[i],
+                });
+            }
+        }
         res.status(200).send({
             message: "Product Updated",
-            data: productUpdated,
         })
     } catch (error) {
         res.status(400).send({
@@ -115,19 +168,37 @@ const updateProductById = async (req, res) => {
 
 const deleteProductById = async (req, res) => {
     try {
-        const products = await product.findOne({
+        const id = req.params.id;
+
+        const productPic = await image.findAll({
             where: {
-                id: req.params.id
+                product_id: id
+            },
+        });
+        let cloudImage;
+
+        if (productPic.length > 0) {
+            for (var i = 0; i < productPic.length; i++) {
+                cloudImage = productPic[i].img.substring(62, 82);
+                cloudinaryDestroy(cloudImage);
+            }
+        }
+        await image.destroy({
+            where: {
+                product_id: id
             }
         });
-        await products.destroy(req.body);
-        fs.unlinkSync(path.join(__dirname, "../../../../public/data/uploads/" + products.product_img1));
-        res.status(200).json({
-            status: "Product Deleted",
-            data: products,
+        await product.destroy({
+            where: {
+                id: req.params.id,
+            }
         })
+
+        res.status(200).json({
+            message: "Product Deleted",
+        });
     } catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             error: error.message
         });
     }
@@ -145,7 +216,7 @@ const listAllProduct = async (req, res) => {
         });
         res.status(200).json({
             status: "OK",
-            data : products
+            data: products
         });
     } catch (error) {
         res.status(400).json({
@@ -180,14 +251,18 @@ const listAllProduct = async (req, res) => {
 
 
 const getProductbyId = async (req, res, next) => {
-    product.findOne({where: {id:req.params.id},include:users})
+    product.findOne({
+            where: {
+                id: req.params.id
+            },
+            include: users
+        })
         .then((product) => {
             if (product) {
                 res.status(200).json({
                     data: product,
                 });
-            } 
-            else {
+            } else {
                 res.status(404).json({
                     status: "FAIL",
                     message: "Product not found!",
@@ -197,11 +272,15 @@ const getProductbyId = async (req, res, next) => {
         .catch((err) => {
             res.status(400).send
         })
-    }
+}
 
-const filterProduct = async (req,res) =>{
+const filterProduct = async (req, res) => {
     try {
-        const data= product.findAll({where: {category: "filter"}})
+        const data = product.findAll({
+            where: {
+                category: "filter"
+            }
+        })
     } catch (error) {
         res.status(400).send
     }
@@ -237,31 +316,41 @@ const filterProduct = async (req,res) =>{
 };
 
 const getAllUserProduct = async (req, res) => {
-    product.findAll({where: {price: req.userlogin.id}})
-    .then((product) => {
-        if (product) {
-            res.status(200).json({
-                data: product,
-            });
-        } 
-        else {
-            res.status(404).json({
-                status: "FAIL",
-                message: "Product not found!",
-            });
-        }
-    })
-    .catch((err) => {
-        res.status(400).send(err)
-    });
+    product.findAll({
+            where: {
+                price: req.userlogin.id
+            }
+        })
+        .then((product) => {
+            if (product) {
+                res.status(200).json({
+                    data: product,
+                });
+            } else {
+                res.status(404).json({
+                    status: "FAIL",
+                    message: "Product not found!",
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(400).send(err)
+        });
 
 };
-const softDelete = async (req,res)=>{
-try {
-    product.update({available:false},{where: {id:req.params.id}, returning:true})
-} catch (error) {
-    
-}
+const softDelete = async (req, res) => {
+    try {
+        product.update({
+            available: false
+        }, {
+            where: {
+                id: req.params.id
+            },
+            returning: true
+        })
+    } catch (error) {
+
+    }
 }
 
 module.exports = {
