@@ -21,6 +21,7 @@ const createProduct = async (req, res) => {
         let fotoProduk = [];
         let fileBase64 = [];
         let file = [];
+        console.log(req.body, "=======================")
         const productCreated = await product.create({
             product_name: req.body.product_name,
             price: req.body.price,
@@ -30,10 +31,14 @@ const createProduct = async (req, res) => {
             createdAt: new Date(),
             updatedAt: new Date(),
         });
+        console.log("data created=======================")
+        console.log(req.files, "===============req.files")
         for (var i = 0; i < req.files.length; i++) {
             fileBase64.push(req.files[i].buffer.toString("base64"));
             file.push(`data:${req.files[i].mimetype};base64,${fileBase64[i]}`);
+            console.log(file[i], "=================file[i]")
             const result = await cloudinaryUpload(file[i]);
+            console.log(result, "================result")
             fotoProduk.push(result.secure_url);
             await image.create({
                 product_id: productCreated.id,
@@ -41,11 +46,13 @@ const createProduct = async (req, res) => {
             });
         }
 
+        console.log("image created================")
         const response_data = await product.findByPk(productCreated.id, {
             include: [{
                 model: image
             }]
         });
+
         res.status(201).send({
             message: "Product Created",
             data: response_data,
@@ -206,11 +213,15 @@ const deleteProductById = async (req, res) => {
 const listAllProduct = async (req, res) => {
     try {
         const products = await product.findAll({
-            where: {
-                available: {
-                    [Op.eq]: true,
-                },
-            },
+            include: [{
+                model: image,
+            }, ],
+            order: [
+                ["createdAt", "DESC"],
+                [{
+                    model: image
+                }, "createdAt", "DESC"],
+            ],
         });
         res.status(200).json({
             status: "OK",
@@ -284,24 +295,23 @@ const filterProduct = async (req, res) => {
     }
 }
 
-  const getProductbyName = async (req, res) => {
-    product.findAll({ 
+const getProductbyName = async (req, res) => {
+    product.findAll({
 
-        where: {
+            where: {
 
-        product_name: {
-            [Op.like]: '%' + req.query.product_name.toLowerCase() + '%'
+                product_name: {
+                    [Op.like]: '%' + req.query.product_name.toLowerCase() + '%'
 
-        }
-    }
+                }
+            }
 
-    }).then((product) => {
+        }).then((product) => {
             if (product) {
                 res.status(200).json({
                     data: product,
                 });
-            } 
-            else {
+            } else {
                 res.status(404).json({
                     status: "FAIL",
                     message: "Product not found!",
@@ -312,6 +322,27 @@ const filterProduct = async (req, res) => {
             res.status(400).send(err)
         });
 };
+
+const getProductbyCategory = async (req, res) => {
+    try {
+        const result = await product.findAll({
+            include: [{
+                model: image,
+            }, ],
+            where: {
+                category: req.body.category
+            },
+        });
+        res.status(200).json({
+            status: 200,
+            data: result,
+        });
+    } catch (err) {
+        console.log(err);
+        res.send(err);
+    }
+}
+
 
 const getAllUserProduct = async (req, res) => {
     product.findAll({
@@ -358,6 +389,7 @@ module.exports = {
     listAllProduct,
     getProductbyId,
     getAllUserProduct,
+    getProductbyCategory,
     softDelete,
     getProductbyName
 }

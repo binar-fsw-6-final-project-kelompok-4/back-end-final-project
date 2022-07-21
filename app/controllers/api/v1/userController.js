@@ -10,6 +10,49 @@ const cloudinary = require("../../../../utils/cloudinary");
 const cloudinaryUpload = promisify(cloudinary.uploader.upload);
 const cloudinaryDestroy = promisify(cloudinary.uploader.destroy);
 
+const getUsers = async (req, res) => {
+    try {
+        const result = await users.findAll();
+        res.status(200).json({
+            status: 200,
+            data: result,
+        });
+    } catch (error) {
+        console.log(error);
+        res.send(error);
+    }
+}
+
+const getUserById = async (req, res) => {
+    const cekData = await users.findOne({
+        where: {
+            id: req.params.id
+        }
+    });
+
+    if (!cekData) {
+        res.status(400).send({
+            status: 400,
+            message: "User tidak ditemukan!",
+        });
+    } else {
+        try {
+            const result = await users.findAll({
+                where: {
+                    id: req.params.id
+                },
+            });
+            res.status(200).json({
+                status: 200,
+                data: result,
+            });
+        } catch (error) {
+            console.log(error);
+            res.send(error);
+        }
+    }
+}
+
 const updateProfile = async (req, res) => {
     try {
         // const {
@@ -68,10 +111,12 @@ const updateProfile = async (req, res) => {
         //     message: "Profile berhasil diperbarui",
         //     data: JSON.parse(JSON.stringify(user)),
         // });
+        const result = await cloudinaryUpload(req.file.path);
         const data = await users.update({
             username: req.body.username,
             address: req.body.address,
             contact: req.body.contact,
+            profile_img: result.secure_url,
             city: req.body.city,
             name: req.body.name
         }, {
@@ -256,6 +301,8 @@ module.exports = {
     createUser,
     updateProfile,
     login,
-    infoUser
+    infoUser,
+    getUsers,
+    getUserById
     // getByEmail
 };
