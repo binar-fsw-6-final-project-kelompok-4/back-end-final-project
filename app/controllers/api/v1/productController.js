@@ -26,6 +26,7 @@ const createProduct = async (req, res) => {
             product_name: req.body.product_name,
             price: req.body.price,
             category: req.body.category,
+            description : req.body.description,
             seller_id: req.userlogin.id,
             available: true,
             createdAt: new Date(),

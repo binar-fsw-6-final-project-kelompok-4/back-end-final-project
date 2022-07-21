@@ -136,8 +136,7 @@ const updateProfile = async (req, res) => {
             userInfo.name == null ||
             userInfo.address == null ||
             userInfo.contact == null ||
-            userInfo.city == null ||
-            userInfo.profile_img == null
+            userInfo.city == null
         ) {
             return (
                 res.status(201).send({
