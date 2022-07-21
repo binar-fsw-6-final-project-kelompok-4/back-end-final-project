@@ -52,7 +52,8 @@ apiRouter.get("/api/v1/users/profile", auth, controllers.api.v1.userController.i
 
 //PRODUCT
 apiRouter.get("/api/v1/products/:id", controllers.api.v1.productController.getProductbyId);
-apiRouter.get("/api/v1/products/filterByCategory", controllers.api.v1.productController.getProductbyCategory);
+apiRouter.post("/api/v1/products/filterByCategory", controllers.api.v1.productController.getProductbyCategory);
+apiRouter.post("/api/v1/filterByName", controllers.api.v1.productController.getProductbyName);
 
 apiRouter.get("/api/v1/listproduct", controllers.api.v1.productController.listAllProduct);
 apiRouter.post("/api/v1/products", sellerAuth, uploadOnMemory.array("img", 4), controllers.api.v1.productController.createProduct);
@@ -60,8 +61,6 @@ apiRouter.post("/api/v1/products", sellerAuth, uploadOnMemory.array("img", 4), c
 apiRouter.delete("/api/v1/products/:id", sellerAuth, controllers.api.v1.productController.deleteProductById);
 apiRouter.put("/api/v1/products/:id", sellerAuth, uploadOnMemory.array("img", 4), controllers.api.v1.productController.updateProductById);
 apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllProduct);
-apiRouter.get("/api/v1/products/:id", controllers.api.v1.productController.getProductbyId);
-apiRouter.get("/api/v1/filterByName", controllers.api.v1.productController.getProductbyName);
 
 //TRANSACTION
 apiRouter.post("/api/v1/products/offer/:id", auth, controllers.api.v1.transactionController.firstOffer);
