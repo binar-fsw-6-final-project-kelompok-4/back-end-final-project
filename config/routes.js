@@ -21,6 +21,7 @@ const controllers = require("../app/controllers");
 
 const upload = require("../utils/upload");
 const uploadOnMemory = require("../utils/memoryUpload");
+const multer = require("../app/middleware/multer")
 
 const cors = require("cors")
 
@@ -43,20 +44,24 @@ appRouter.get("/", controllers.main.index);
 
 //USER
 apiRouter.post("/api/v1/users/add", controllers.api.v1.userController.createUser);
-apiRouter.put("/api/v1/users/profile/edit", auth, uploadOnMemory.single("profile_img"), controllers.api.v1.userController.updateProfile);
+apiRouter.put("/api/v1/users/profile/edit", auth, multer.single("profile_img"), controllers.api.v1.userController.updateProfile);
 apiRouter.post("/api/v1/users/login", controllers.api.v1.userController.login);
+apiRouter.get("/api/v1/users", controllers.api.v1.userController.getUsers);
+apiRouter.get("/api/v1/users/:id", controllers.api.v1.userController.getUserById);
 apiRouter.get("/api/v1/users/profile", auth, controllers.api.v1.userController.infoUser);
 
 //PRODUCT
 apiRouter.get("/api/v1/products/:id", controllers.api.v1.productController.getProductbyId);
+apiRouter.get("/api/v1/products/filterByCategory", controllers.api.v1.productController.getProductbyCategory);
+
 apiRouter.get("/api/v1/listproduct", controllers.api.v1.productController.listAllProduct);
 apiRouter.post("/api/v1/products", sellerAuth, uploadOnMemory.array("img", 4), controllers.api.v1.productController.createProduct);
 // apiRouter.get("/api/v1/products/:id", buyerSeller,controllers.api.v1.productController.getProduct);
 apiRouter.delete("/api/v1/products/:id", sellerAuth, controllers.api.v1.productController.deleteProductById);
 apiRouter.put("/api/v1/products/:id", sellerAuth, uploadOnMemory.array("img", 4), controllers.api.v1.productController.updateProductById);
 apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllProduct);
-apiRouter.get("/api/v1/getproduct/:id", controllers.api.v1.productController.getProductbyId);
-apiRouter.get("/api/v1/getproductbyname", controllers.api.v1.productController.getProductbyName);
+apiRouter.get("/api/v1/products/:id", controllers.api.v1.productController.getProductbyId);
+apiRouter.get("/api/v1/filterByName", controllers.api.v1.productController.getProductbyName);
 
 //TRANSACTION
 apiRouter.post("/api/v1/products/offer/:id", auth, controllers.api.v1.transactionController.firstOffer);
