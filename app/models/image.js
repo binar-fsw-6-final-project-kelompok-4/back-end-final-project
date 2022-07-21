@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
   image.init({
     product_id: DataTypes.INTEGER,
     img: DataTypes.STRING,
-    thumbnail: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'image',
