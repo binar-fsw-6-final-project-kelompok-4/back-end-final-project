@@ -26,7 +26,7 @@ const createProduct = async (req, res) => {
             product_name: req.body.product_name,
             price: req.body.price,
             category: req.body.category,
-            description : req.body.description,
+            description: req.body.description,
             seller_id: req.userlogin.id,
             available: true,
             createdAt: new Date(),
@@ -285,57 +285,62 @@ const getProductbyId = async (req, res, next) => {
 }
 
 const getInfoProduct = async (req, res) => {
-    const cekData = await product.findOne({ where: { id: req.params.id } });
+    const cekData = await product.findOne({
+        where: {
+            id: req.params.id
+        }
+    });
 
     if (!cekData) {
-      res.status(400).send({
-        status: 400,
-        message: "Produk tidak ditemukan!",
-      });
+        res.status(400).send({
+            status: 400,
+            message: "Produk tidak ditemukan!",
+        });
     } else {
-      try {
-        const result = await product.findAll({
-          include: [
-            {
-              model: image,
-            },
-            {
-              model: users,
-            },
-          ],
-          where: { id: req.params.id },
-        });
-        res.status(200).json({
-          status: 200,
-          data: result,
-        });
-      } catch (err) {
-        console.log(err);
-        res.send(err);
-      }
+        try {
+            const result = await product.findAll({
+                include: [{
+                        model: image,
+                    },
+                    {
+                        model: users,
+                    },
+                ],
+                where: {
+                    id: req.params.id
+                },
+            });
+            res.status(200).json({
+                status: 200,
+                data: result,
+            });
+        } catch (err) {
+            console.log(err);
+            res.send(err);
+        }
     }
 }
 
 const getProductbyName = async (req, res) => {
     try {
         const result = await product.findAll({
-          include: [
-            {
-              model: image,
+            include: [{
+                model: image,
+            }, ],
+            where: {
+                product_name: {
+                    [Op.like]: "%" + req.body.productName + "%"
+                },
             },
-          ],
-          where: {
-            product_name: { [Op.like]: "%" + req.body.product_name + "%" },
-          },
         });
         res.status(200).json({
-          status: 200,
-          data: result,
+            status: 200,
+            data: result,
         });
-      } catch (err) {
+    } catch (err) {
         console.log(err);
         res.send(err);
-      }
+    }
 };
 
 const getProductbyCategory = async (req, res) => {
