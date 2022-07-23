@@ -51,10 +51,10 @@ apiRouter.get("/api/v1/users/:id", controllers.api.v1.userController.getUserById
 apiRouter.get("/api/v1/users/profile", auth, controllers.api.v1.userController.infoUser);
 
 //PRODUCT
+apiRouter.get("/api/v1/products/info/:id", controllers.api.v1.productController.getInfoProduct);
 apiRouter.get("/api/v1/products/:id", controllers.api.v1.productController.getProductbyId);
 apiRouter.post("/api/v1/products/filterByCategory", controllers.api.v1.productController.getProductbyCategory);
 apiRouter.post("/api/v1/filterByName", controllers.api.v1.productController.getProductbyName);
-
 apiRouter.get("/api/v1/listproduct", controllers.api.v1.productController.listAllProduct);
 apiRouter.post("/api/v1/products", sellerAuth, uploadOnMemory.array("img", 4), controllers.api.v1.productController.createProduct);
 // apiRouter.get("/api/v1/products/:id", buyerSeller,controllers.api.v1.productController.getProduct);

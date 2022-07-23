@@ -284,44 +284,58 @@ const getProductbyId = async (req, res, next) => {
         })
 }
 
-const filterProduct = async (req, res) => {
-    try {
-        const data = product.findAll({
-            where: {
-                category: "filter"
-            }
-        })
-    } catch (error) {
-        res.status(400).send
+const getInfoProduct = async (req, res) => {
+    const cekData = await product.findOne({ where: { id: req.params.id } });
+
+    if (!cekData) {
+      res.status(400).send({
+        status: 400,
+        message: "Produk tidak ditemukan!",
+      });
+    } else {
+      try {
+        const result = await product.findAll({
+          include: [
+            {
+              model: image,
+            },
+            {
+              model: users,
+            },
+          ],
+          where: { id: req.params.id },
+        });
+        res.status(200).json({
+          status: 200,
+          data: result,
+        });
+      } catch (err) {
+        console.log(err);
+        res.send(err);
+      }
     }
 }
 
 const getProductbyName = async (req, res) => {
-    product.findAll({
-
-            where: {
-
-                product_name: {
-                    [Op.like]: '%' + req.query.product_name.toLowerCase() + '%'
-
-                }
-            }
-
-        }).then((product) => {
-            if (product) {
-                res.status(200).json({
-                    data: product,
-                });
-            } else {
-                res.status(404).json({
-                    status: "FAIL",
-                    message: "Product not found!",
-                });
-            }
-        })
-        .catch((err) => {
-            res.status(400).send(err)
+    try {
+        const result = await product.findAll({
+          include: [
+            {
+              model: image,
+            },
+          ],
+          where: {
+            product_name: { [Op.like]: "%" + req.body.product_name + "%" },
+          },
         });
+        res.status(200).json({
+          status: 200,
+          data: result,
+        });
+      } catch (err) {
+        console.log(err);
+        res.send(err);
+      }
 };
 
 const getProductbyCategory = async (req, res) => {
@@ -392,5 +406,6 @@ module.exports = {
     getAllUserProduct,
     getProductbyCategory,
     softDelete,
-    getProductbyName
+    getProductbyName,
+    getInfoProduct
 }
