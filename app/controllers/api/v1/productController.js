@@ -300,16 +300,9 @@ const getInfoProduct = async (req, res) => {
     } else {
         try {
             const result = await product.findAll({
-                include: [{
-                        model: image,
-                    },
-                    {
-                        model: users,
-                    },
-                ],
                 where: {
                     id: req.params.id
-                },
+                }
             });
             res.status(200).json({
                 status: 200,
