@@ -122,8 +122,7 @@ const updateProfile = async (req, res) => {
         }, {
             where: {
                 id: req.userlogin.id
-            },
-            returning: true
+            }
         })
 
         const userInfo = await users.findOne({
