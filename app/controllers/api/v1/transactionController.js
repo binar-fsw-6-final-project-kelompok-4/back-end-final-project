@@ -1,4 +1,3 @@
-
 const {
     trancsaction,
     product
@@ -6,48 +5,62 @@ const {
 
 const firstOffer = async (req, res) => {
     try {
-        const sourceProduct = await product.findOne({where: {id :req.params.id}});
-        const verifProduct = await trancsaction.findOne({where:{product_id : req.params.id,buyer_id: req.userlogin.id}})
+        console.log("masuk controller ==================");
+        const sourceProduct = await product.findOne({
+            where: {
+                id: req.params.id
+            }
+        });
+        console.log("source product ==================");
+        const verifProduct = await trancsaction.findOne({
+            where: {
+                product_id: req.params.id,
+                buyer_id: req.userlogin.id
+            }
+        })
         // const verifBuyer = await verifProduct.findOne({where:{buyer_id : req.userlogin.id,product_id:req.params.id}})
-
+        console.log("verif product ==================");
         if (sourceProduct.seller_id == req.userlogin.id) {
-            return(
-            res.status(400).json({
-                error: "Anda adalah pemmilik produk ini!"
-            })
-            )
-        }
-
-        if (verifProduct.buyer_id == req.userlogin.id && verifProduct.status == 1 ) {
-            return(
-                res.status(201).json({
-                    error: "Anda sudah punya tawaran produk ini!",
-                    data : verifProduct
+            return (
+                res.status(400).json({
+                    error: "Anda adalah pemmilik produk ini!"
                 })
+            )
+        } else {
+            if (verifProduct == null) {
+                if (req.body.offer > sourceProduct.price) {
+                    return (
+                        res.status(500).json({
+                            status: "Tawaran anda lebih tinggi dari harga awal",
+                        })
+                    )
+                } else {
+                    const first = await trancsaction.create({
+                        product_id: req.params.id,
+                        seller_id: sourceProduct.seller_id,
+                        buyer_id: req.userlogin.id,
+                        status: 1,
+                        offer: req.body.offer
+                    })
+
+                    res.status(201).send({
+                        status: 201,
+                        message: 'Berhasil Menawar!',
+                        data: first
+                    })
+                }
+            } else {
+                return (
+                    res.status(201).json({
+                        error: "Anda sudah punya tawaran produk ini!",
+                        data: verifProduct
+                    })
                 )
+            }
         }
 
 
-        if (req.body.offer > sourceProduct.price ) {
-            return(
-                res.status(500).json({
-                    status: "Tawaran anda lebih tinggi dari harga awal",
-                })
-            )
-        }
-       const first = await trancsaction.create({
-        product_id: req.params.id,
-        seller_id: sourceProduct.seller_id,
-        buyer_id: req.userlogin.id,
-        status: 1,
-        offer: req.body.offer
-       })
 
-       res.status(201).send({
-        status: 201,
-        message: 'Berhasil Menawar!',
-        data: first
-    })
     } catch (error) {
         res.status(402).json({
             status: "FAIL",
@@ -65,7 +78,7 @@ const acceptedOffer = async (req, res) => {
             }
         })
 
-        const accept = OnGoingoffer.update({
+        const accept = await OnGoingoffer.update({
             status: 2,
             available: false
         })
@@ -88,16 +101,14 @@ const rejectedOffer = async (req, res) => {
             where: {
                 product_id: req.params.id,
                 buyer_id: req.params.buyer_id
-            }
+            },
         })
-
-        const reject = OnGoingoffer.update({
-            status: 2,
-            available: false
+        const reject = await OnGoingoffer.update({
+            status: 3
         })
         res.status(201).send({
             status: 201,
-            message: 'Penawaran Diterima!',
+            message: 'Penawaran Ditolak!',
             data: reject
         })
     } catch (error) {
@@ -108,15 +119,19 @@ const rejectedOffer = async (req, res) => {
     }
 }
 
-const getTransaction = async (req,res) =>{
+const getTransaction = async (req, res) => {
     try {
-        const sourceTransaction = await trancsaction.findOne({where: {id :req.params.id}, include : product})
-        res.status(201).send({
-            status : 201,
-            data : sourceTransaction
+        const sourceTransaction = await trancsaction.findOne({
+            where: {
+                id: req.params.id
+            },
+            include: product
         })
-    } catch (error) {
-    }
+        res.status(201).send({
+            status: 201,
+            data: sourceTransaction
+        })
+    } catch (error) {}
 }
 
 // const updateOffer = async (req,res) =>{
@@ -127,7 +142,7 @@ const getTransaction = async (req,res) =>{
 //         }
 //         else if (req.userlogin.id == sourceTransaction.product.seller_id){
 
-        
+
 
 // //     } catch (error) {
 // //         res.status(500).send(error)
