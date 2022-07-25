@@ -64,7 +64,8 @@ apiRouter.get("/api/v1/products", controllers.api.v1.productController.listAllPr
 
 //TRANSACTION
 apiRouter.post("/api/v1/products/offer/:id", auth, controllers.api.v1.transactionController.firstOffer);
-apiRouter.get("/api/v1/products/offer/:id/:buyer_id", controllers.api.v1.transactionController.acceptedOffer)
+apiRouter.get("/api/v1/products/offer/accept/:id/:buyer_id", controllers.api.v1.transactionController.acceptedOffer);
+apiRouter.get("/api/v1/products/offer/accept/:id/:buyer_id", controllers.api.v1.transactionController.rejectedOffer)
 apiRouter.get("/api/v1/products/offer/data/:id", controllers.api.v1.transactionController.getTransaction);
 
 // apiRouter.get("/api/v1/getproductbyname", controllers.api.v1.productController.getProductbyName);
